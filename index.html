@@ -1,0 +1,1542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SyllableX - Master the Rhythm of Language</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        :root {
+            --bg-cream: #f4efe9;
+            --hero-teal: #0c383b;
+            --accent-yellow: #f4a736;
+            --accent-coral: #dc6547;
+            --accent-green: #1f5e40;
+            --bright-green: #20a060;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-cream);
+            color: #1e293b;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, .font-heading {
+            font-family: 'Outfit', sans-serif;
+        }
+
+        /* Dynamic Ribbon Dash Flow Animation */
+        @keyframes ribbonFlow {
+            0% { stroke-dashoffset: 1000; filter: drop-shadow(0 4px 10px rgba(244, 167, 54, 0.4)); }
+            50% { stroke-dashoffset: 0; filter: drop-shadow(0 8px 20px rgba(244, 167, 54, 0.8)); }
+            100% { stroke-dashoffset: -1000; filter: drop-shadow(0 4px 10px rgba(244, 167, 54, 0.4)); }
+        }
+        .animate-ribbon-flow {
+            stroke-dasharray: 80 20;
+            animation: ribbonFlow 25s linear infinite;
+        }
+
+        /* 3D Wave Floating Animations */
+        @keyframes waveBounce {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-12px) rotate(2deg); }
+            66% { transform: translateY(6px) rotate(-1.5deg); }
+        }
+        .animate-wave-1 {
+            animation: waveBounce 6s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+        }
+        .animate-wave-2 {
+            animation: waveBounce 7s cubic-bezier(0.45, 0.05, 0.55, 0.95) 1.5s infinite;
+        }
+        .animate-wave-3 {
+            animation: waveBounce 8s cubic-bezier(0.45, 0.05, 0.55, 0.95) 3s infinite;
+        }
+
+        /* Rotating Stamp Animation */
+        @keyframes spinSlow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .animate-spin-slow {
+            animation: spinSlow 20s linear infinite;
+        }
+        .animate-spin-slow:hover {
+            animation-play-state: paused;
+        }
+
+        /* Button Light Sweep Effect */
+        @keyframes lightSweep {
+            0% { transform: translateX(-100%) rotate(25deg); }
+            20%, 100% { transform: translateX(250%) rotate(25deg); }
+        }
+        .btn-sweep {
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-sweep::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 40%;
+            height: 200%;
+            background: linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255,0.4), rgba(255,255,255,0));
+            animation: lightSweep 4s ease-in-out infinite;
+        }
+
+        /* Elastic Syllable Tile Interactions */
+        .tile {
+            cursor: pointer;
+            user-select: none;
+            transition: transform 0.3s cubic-bezier(0.68, -0.6, 0.32, 1.6), box-shadow 0.3s ease, background-color 0.2s ease;
+        }
+        .tile:hover {
+            transform: translateY(-6px) scale(1.08);
+            box-shadow: 0 16px 30px -8px rgba(12, 56, 59, 0.4);
+        }
+        .tile:active {
+            transform: scale(0.90);
+        }
+
+        /* Shake animation for errors */
+        @keyframes errorShake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-10px); }
+            40%, 80% { transform: translateX(10px); }
+        }
+        .animate-shake {
+            animation: errorShake 0.45s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+        }
+
+        /* Success Pulse Glow */
+        @keyframes successGlow {
+            0%, 100% { box-shadow: 0 0 0px rgba(32, 160, 96, 0); transform: scale(1); }
+            50% { box-shadow: 0 0 40px rgba(32, 160, 96, 0.7); transform: scale(1.02); }
+        }
+        .correct-glow {
+            animation: successGlow 0.7s ease-in-out;
+            border-color: #20a060 !important;
+        }
+
+        /* Card Hover Tilt Effects */
+        .feature-card {
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+        }
+        .feature-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 25px 40px -12px rgba(0, 0, 0, 0.18);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f4efe9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between p-3 md:p-6 selection:bg-[#f4a736] selection:text-[#0c383b]">
+
+    <!-- APP WRAPPER FRAME (Matching cream UI design) -->
+    <div class="max-w-6xl mx-auto w-full bg-[#f4efe9] rounded-[2.5rem] p-3 md:p-6 relative">
+
+        <!-- TOP NAVBAR -->
+        <header class="w-full flex justify-between items-center py-4 px-3 md:px-6 mb-4">
+            <!-- Brand Logo -->
+            <a href="#" class="flex items-center gap-2.5 group">
+                <div class="w-9 h-9 text-[#0c383b] flex items-center justify-center transition-transform group-hover:rotate-180 duration-700">
+                    <svg class="w-9 h-9" viewBox="0 0 100 50" fill="none" stroke="currentColor" stroke-width="10" stroke-linecap="round">
+                        <path d="M25,25 C10,10 5,40 25,40 C45,40 55,10 75,10 C95,10 90,40 75,40 C55,40 45,10 25,10 Z"/>
+                    </svg>
+                </div>
+                <span class="text-2xl font-black tracking-tight text-[#0c383b] font-heading">Syllable<span class="text-[#f4a736]">X</span></span>
+            </a>
+
+            <!-- Navigation Links -->
+            <nav class="hidden md:flex items-center gap-8 font-semibold text-xs tracking-wide text-stone-700">
+                <a href="#hero" class="hover:text-[#0c383b] transition border-b-2 border-transparent hover:border-[#0c383b] py-1">Home</a>
+                <a href="#challenges" class="hover:text-[#0c383b] transition border-b-2 border-transparent hover:border-[#0c383b] py-1">Syllable Puzzles</a>
+                <a href="#mission" class="hover:text-[#0c383b] transition border-b-2 border-transparent hover:border-[#0c383b] py-1">Features</a>
+                <a href="#" onclick="showLeaderboardModal()" class="hover:text-[#0c383b] transition border-b-2 border-transparent hover:border-[#0c383b] py-1">Leaderboard</a>
+            </nav>
+
+            <!-- Action Controls -->
+            <div class="flex items-center gap-4">
+                <button onclick="showLeaderboardModal()" class="hidden sm:flex text-stone-700 hover:text-[#0c383b] p-2 rounded-full hover:bg-stone-200/60 transition" title="Leaderboard Search">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                </button>
+                <button class="hidden sm:flex text-stone-700 hover:text-[#0c383b] p-2 rounded-full hover:bg-stone-200/60 transition" title="Language Select">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z M3.6 9h16.8 M3.6 15h16.8"/></svg>
+                </button>
+                <button onclick="openRegistrationModal()" class="bg-[#0c383b] hover:bg-[#144d51] text-white font-bold text-xs px-6 py-2.5 rounded-full shadow-md hover:shadow-lg transition transform active:scale-95 flex items-center gap-2">
+                    <span>Login / Start</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- MAIN HERO SECTION WRAPPER (No Outer Overflow Clipping so badge & stamp floating on edges are 100% visible!) -->
+        <section id="hero" class="relative mb-20 pt-2">
+            
+            <!-- Inner Dark Teal Hero Card -->
+            <div id="hero-card" class="relative bg-[#0c383b] text-white rounded-[2.8rem] p-8 md:p-14 shadow-2xl overflow-hidden border border-[#144d51] transition-transform duration-300 ease-out">
+                
+                <!-- Ambient Glowing Orbs -->
+                <div class="absolute -top-20 -left-20 w-80 h-80 bg-emerald-500/15 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="absolute -bottom-20 right-1/4 w-96 h-96 bg-amber-500/15 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="absolute top-10 right-10 w-3 h-3 bg-white/70 rounded-full animate-ping"></div>
+                <div class="absolute top-1/3 right-1/3 w-4 h-4 bg-[#f4a736] rounded-full animate-wave-1"></div>
+                <div class="absolute bottom-1/4 left-1/2 w-4 h-4 bg-[#20a060] rounded-full animate-wave-2"></div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
+
+                    <!-- Left Content Column -->
+                    <div class="lg:col-span-7 space-y-6">
+                        <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-[3.2rem] font-extrabold leading-[1.12] tracking-tight font-heading">
+                            Master the rhythm of language with SyllableX.
+                        </h1>
+                        <p class="text-stone-300 text-sm md:text-base font-normal max-w-xl leading-relaxed">
+                            Discover correct word pronunciation and structure by identifying syllables, one challenge at a time.
+                        </p>
+
+                        <!-- Key Stats Counter -->
+                        <div class="flex items-center gap-8 pt-2">
+                            <div>
+                                <div class="text-2xl sm:text-3xl font-black text-white tracking-tight font-heading">
+                                    <span id="stat-words">8500</span>+
+                                </div>
+                                <div class="text-[11px] uppercase tracking-wider text-stone-300 font-semibold mt-0.5">
+                                    Words Analyzed
+                                </div>
+                            </div>
+                            <div class="h-10 w-[1px] bg-white/15"></div>
+                            <div>
+                                <div class="text-2xl sm:text-3xl font-black text-white tracking-tight font-heading">
+                                    <span id="stat-accuracy">97</span>%
+                                </div>
+                                <div class="text-[11px] uppercase tracking-wider text-stone-300 font-semibold mt-0.5">
+                                    Syllabification Accuracy
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- CTA Action Buttons -->
+                        <div class="flex flex-wrap items-center gap-4 pt-4">
+                            <button onclick="openRegistrationModal()" class="btn-sweep bg-[#f4a736] hover:bg-[#f5b34d] text-[#0c383b] font-extrabold text-xs sm:text-sm px-7 py-3.5 rounded-full shadow-xl transition transform hover:-translate-y-1 active:scale-95 flex items-center gap-2">
+                                <span>Start First Puzzle</span>
+                            </button>
+                            <button onclick="showLeaderboardModal()" class="bg-transparent hover:bg-white/10 text-white border border-white/40 hover:border-white font-bold text-xs sm:text-sm px-6 py-3.5 rounded-full transition transform hover:-translate-y-0.5">
+                                Check Leaderboard
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Right Artwork Column -->
+                    <div class="lg:col-span-5 relative h-72 sm:h-96 lg:h-[420px] flex items-center justify-center">
+                        
+                        <!-- Dynamic SVG Canvas: Animated Looping Orange Ribbon -->
+                        <svg class="absolute inset-0 w-full h-full overflow-visible pointer-events-none z-10" viewBox="0 0 500 450" fill="none">
+                            <defs>
+                                <linearGradient id="ribbonGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#f4a736" />
+                                    <stop offset="50%" stop-color="#e28728" />
+                                    <stop offset="100%" stop-color="#f4a736" />
+                                </linearGradient>
+                                <filter id="shadowRibbon" x="-20%" y="-20%" width="140%" height="140%">
+                                    <feDropShadow dx="0" dy="10" stdDeviation="8" flood-color="#000000" flood-opacity="0.35"/>
+                                </filter>
+                            </defs>
+                            <!-- Curving Ribbon SVG Path with Wave Flow Animation -->
+                            <path d="M 40 140 C 170 10 430 30 460 170 C 490 310 270 170 190 270 C 110 370 370 430 450 330 C 480 290 440 190 370 210" 
+                                  stroke="url(#ribbonGrad)" stroke-width="28" stroke-linecap="round" fill="none" filter="url(#shadowRibbon)" class="animate-ribbon-flow"/>
+                        </svg>
+
+                        <!-- High-Fidelity Embedded Vector Characters -->
+                        <div class="relative z-20 w-full h-full flex items-center justify-center">
+
+                            <!-- Character 1 (Left - Seated in yellow polo & navy pants) -->
+                            <div class="absolute left-1 sm:left-4 bottom-4 w-36 sm:w-48 animate-wave-1">
+                                <svg viewBox="0 0 200 220" fill="none" class="w-full filter drop-shadow-2xl">
+                                    <ellipse cx="100" cy="205" rx="55" ry="10" fill="#000000" opacity="0.25"/>
+                                    <path d="M 60 145 Q 40 185 30 200 L 58 205 Q 75 180 85 150 Z" fill="#0b2b2e"/>
+                                    <path d="M 120 145 Q 140 185 155 200 L 128 205 Q 110 180 98 150 Z" fill="#0b2b2e"/>
+                                    <path d="M 22 195 C 18 202 35 208 60 206 C 58 200 40 195 22 195 Z" fill="#ffffff"/>
+                                    <path d="M 162 195 C 166 202 149 208 124 206 C 126 200 144 195 162 195 Z" fill="#ffffff"/>
+                                    <path d="M 60 90 Q 100 80 140 90 L 132 152 Q 100 158 68 152 Z" fill="#f4a736"/>
+                                    <path d="M 88 85 L 100 100 L 112 85 Z" fill="#ffffff"/>
+                                    <rect x="92" y="70" width="16" height="20" fill="#fbcfe8" rx="4"/>
+                                    <circle cx="100" cy="55" r="24" fill="#fbcfe8"/>
+                                    <path d="M 78 50 Q 100 25 122 50 Q 112 35 90 40 Z" fill="#334155"/>
+                                    <path d="M 58 95 Q 35 125 50 140 Q 60 135 70 105 Z" fill="#f4a736"/>
+                                    <circle cx="48" cy="142" r="7" fill="#fbcfe8"/>
+                                    <path d="M 142 95 Q 165 125 150 140 Q 140 135 130 105 Z" fill="#f4a736"/>
+                                    <circle cx="152" cy="142" r="7" fill="#fbcfe8"/>
+                                </svg>
+                            </div>
+
+                            <!-- Character 2 (Top Right - Standing with green shirt, cap & backpack) -->
+                            <div class="absolute right-2 sm:right-8 top-1 w-36 sm:w-48 animate-wave-2">
+                                <svg viewBox="0 0 200 240" fill="none" class="w-full filter drop-shadow-2xl">
+                                    <ellipse cx="100" cy="228" rx="45" ry="8" fill="#000000" opacity="0.25"/>
+                                    <rect x="122" y="65" width="28" height="60" rx="10" fill="#154d33"/>
+                                    <rect x="72" y="145" width="22" height="40" fill="#dc6547" rx="4"/>
+                                    <rect x="106" y="145" width="22" height="40" fill="#dc6547" rx="4"/>
+                                    <path d="M 75 185 L 72 224 L 92 224 L 94 185 Z" fill="#fde68a"/>
+                                    <path d="M 108 185 L 106 224 L 126 224 L 124 185 Z" fill="#fde68a"/>
+                                    <ellipse cx="80" cy="226" rx="16" ry="7" fill="#ffffff"/>
+                                    <ellipse cx="118" cy="226" rx="16" ry="7" fill="#ffffff"/>
+                                    <path d="M 68 85 Q 100 78 132 85 L 128 150 L 72 150 Z" fill="#20a060"/>
+                                    <rect x="94" y="68" width="12" height="20" fill="#fde68a"/>
+                                    <circle cx="100" cy="52" r="22" fill="#fde68a"/>
+                                    <path d="M 74 38 Q 100 20 126 38 L 138 42 L 126 46 Q 100 32 74 46 Z" fill="#f4a736"/>
+                                    <path d="M 80 88 L 80 135" stroke="#154d33" stroke-width="6" stroke-linecap="round"/>
+                                    <path d="M 120 88 L 120 135" stroke="#154d33" stroke-width="6" stroke-linecap="round"/>
+                                </svg>
+                            </div>
+
+                            <!-- Character 3 (Bottom Right - Seated with white top & long hair) -->
+                            <div class="absolute right-6 sm:right-14 bottom-0 w-40 sm:w-52 animate-wave-3">
+                                <svg viewBox="0 0 220 200" fill="none" class="w-full filter drop-shadow-2xl">
+                                    <ellipse cx="110" cy="188" rx="60" ry="10" fill="#000000" opacity="0.25"/>
+                                    <path d="M 75 40 Q 110 10 145 40 Q 155 90 140 140 Q 110 130 80 130 Q 65 90 75 40 Z" fill="#991b1b"/>
+                                    <path d="M 85 125 Q 140 145 185 155 L 180 175 Q 130 165 75 140 Z" fill="#0b2b2e"/>
+                                    <path d="M 85 135 Q 145 155 195 168 L 190 188 Q 135 175 75 150 Z" fill="#0b2b2e"/>
+                                    <ellipse cx="186" cy="165" rx="14" ry="7" fill="#ffffff"/>
+                                    <ellipse cx="196" cy="178" rx="14" ry="7" fill="#ffffff"/>
+                                    <path d="M 80 75 Q 110 68 140 75 L 132 130 Q 110 135 88 130 Z" fill="#ffffff"/>
+                                    <circle cx="110" cy="50" r="22" fill="#fbcfe8"/>
+                                    <path d="M 90 45 Q 110 30 130 45 Q 125 35 105 38 Z" fill="#991b1b"/>
+                                </svg>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- CURVED GREEN BADGE (OUTSIDE Inner Card, OVERLAPPING Bottom-Left Boundary, 100% VISIBLE!) -->
+            <div class="absolute -bottom-5 left-6 sm:left-12 z-30">
+                <div class="bg-[#20a060] text-white font-extrabold text-xs sm:text-sm px-6 sm:px-8 py-3 rounded-full shadow-2xl flex items-center gap-2.5 border-4 border-[#f4efe9] transition transform hover:scale-105">
+                    <span class="w-2.5 h-2.5 bg-white rounded-full animate-ping"></span>
+                    <span>Focus on Accuracy and Pace</span>
+                </div>
+            </div>
+
+            <!-- ROTATING CIRCULAR STAMP (OUTSIDE Inner Card, OVERLAPPING Bottom-Right Boundary, 100% VISIBLE!) -->
+            <div class="absolute -bottom-6 right-6 sm:right-10 z-30">
+                <div class="relative w-24 h-24 sm:w-28 sm:h-28 flex items-center justify-center">
+                    <svg class="w-full h-full animate-spin-slow" viewBox="0 0 100 100">
+                        <path id="textPath" d="M 50, 50 m -37, 0 a 37,37 0 1,1 74,0 a 37,37 0 1,1 -74,0" fill="none"/>
+                        <text font-size="8.5" font-weight="800" fill="#0c383b" letter-spacing="2">
+                            <textPath href="#textPath" startOffset="0%">
+                                • SEE MORE ABOUT US • SYLLABLE X
+                            </textPath>
+                        </text>
+                    </svg>
+                    <div class="absolute w-10 h-10 sm:w-12 sm:h-12 bg-[#dc6547] text-white rounded-full flex items-center justify-center shadow-xl border-2 border-[#f4efe9]">
+                        <svg class="w-6 h-6" viewBox="0 0 100 50" fill="none" stroke="currentColor" stroke-width="12">
+                            <path d="M25,25 C10,10 5,40 25,40 C45,40 55,10 75,10 C95,10 90,40 75,40 C55,40 45,10 25,10 Z"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- REGISTRATION & GAMEPLAY SECTION CONTAINER -->
+        <section id="challenges" class="pt-8 mb-16">
+            
+            <!-- DEFAULT GAME LAUNCH CARD -->
+            <div id="screen-registration" class="bg-white rounded-[2.5rem] p-6 sm:p-10 shadow-xl border border-stone-200 text-center relative overflow-hidden">
+                <div class="max-w-xl mx-auto space-y-4">
+                    <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-emerald-50 text-[#1f5e40] text-xs font-bold rounded-full border border-emerald-200 uppercase tracking-wider">
+                        <span>⚡</span> 20 Level Word Syllable Challenge
+                    </div>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-[#0c383b] font-heading">
+                        Ready to Test Your Pronunciation Speed?
+                    </h2>
+                    <p class="text-stone-600 text-xs sm:text-sm">
+                        Enter your player name below to jump into 20 fast-paced technical word puzzles. Arrange jumbled syllables before the 30s timer runs out!
+                    </p>
+
+                    <form id="reg-form" onsubmit="startGame(event)" class="pt-4 max-w-md mx-auto space-y-4">
+                        <div class="text-left">
+                            <label class="block text-xs uppercase tracking-wider text-stone-500 font-bold mb-1.5 ml-1">Player Alias</label>
+                            <input type="text" id="player-name" required placeholder="e.g. Alex Rivera" 
+                                class="w-full bg-stone-50 border border-stone-300 rounded-2xl px-5 py-3.5 text-stone-900 placeholder-stone-400 focus:outline-none focus:border-[#0c383b] focus:ring-2 focus:ring-[#0c383b]/20 transition font-medium text-sm">
+                        </div>
+
+                        <button type="submit" class="w-full bg-[#0c383b] hover:bg-[#144d51] text-white font-extrabold py-4 px-6 rounded-2xl shadow-lg transition transform active:scale-95 text-sm flex items-center justify-center gap-2">
+                            <span>Launch Challenge Mode</span>
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- ACTIVE GAMEPLAY SCREEN (Hidden initially, seamlessly slides in) -->
+            <div id="screen-game" class="hidden bg-white border border-stone-200 rounded-[2.5rem] p-6 sm:p-10 shadow-2xl relative">
+                
+                <!-- Status Top Bar -->
+                <div class="flex flex-wrap justify-between items-center gap-4 mb-6 pb-4 border-b border-stone-100">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span id="display-player" class="font-extrabold text-[#0c383b] text-base">Player</span>
+                            <span class="text-[10px] bg-emerald-100 text-[#1f5e40] px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider border border-emerald-300">Active Session</span>
+                        </div>
+                        <div class="text-xs text-stone-500 mt-1">Total Elapsed: <span id="timer-display" class="font-mono text-[#0c383b] font-bold">00:00</span></div>
+                    </div>
+
+                    <div class="flex items-center gap-6">
+                        <div class="text-right">
+                            <span class="text-[10px] uppercase text-stone-400 block font-extrabold">Current Score</span>
+                            <span id="score-display" class="text-2xl font-black text-[#20a060]">0</span>
+                        </div>
+                        <button onclick="quitGame()" class="text-stone-400 hover:text-rose-600 text-xs font-bold px-3 py-1.5 rounded-xl border border-stone-200 hover:border-rose-300 transition">Quit</button>
+                    </div>
+                </div>
+
+                <!-- Level Progress & Question Timer -->
+                <div class="mb-6 space-y-2">
+                    <div class="flex justify-between items-center text-xs text-stone-600 font-bold">
+                        <span id="level-indicator" class="text-[#0c383b] font-extrabold">Level 1 of 20</span>
+                        <div class="flex items-center gap-2">
+                            <span id="syllable-badge" class="text-indigo-700 bg-indigo-50 px-3 py-1 rounded-full border border-indigo-200 font-semibold">3 Syllables</span>
+                            <span id="q-timer-badge" class="text-amber-700 bg-amber-50 px-3 py-1 rounded-full border border-amber-300 font-mono font-bold">⏱️ 30s</span>
+                        </div>
+                    </div>
+                    <div class="w-full bg-stone-100 h-2.5 rounded-full overflow-hidden">
+                        <div id="progress-bar" class="bg-[#20a060] h-full w-[5%] transition-all duration-300"></div>
+                    </div>
+                    <div class="w-full bg-stone-100 h-1.5 rounded-full overflow-hidden">
+                        <div id="q-timer-bar" class="bg-[#f4a736] h-full w-full transition-all duration-1000"></div>
+                    </div>
+                </div>
+
+                <!-- Word Hint Card -->
+                <div class="bg-[#f4efe9] border border-stone-300/70 rounded-2xl p-4 sm:p-5 mb-6 relative overflow-hidden">
+                    <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-[#0c383b]"></div>
+                    <span class="text-[10px] uppercase tracking-widest text-[#0c383b] font-extrabold block mb-1">Definition / Concept Hint:</span>
+                    <p id="hint-text" class="text-sm sm:text-base text-stone-800 italic leading-relaxed font-medium">Loading concept hint...</p>
+                </div>
+
+                <!-- Syllables Answer Zone -->
+                <div class="mb-6">
+                    <div class="flex justify-between items-center mb-2">
+                        <label class="block text-xs uppercase tracking-wider text-stone-500 font-bold">Answer Sequence Zone (Click tile to return to bank | Drag to swap order):</label>
+                    </div>
+                    <div id="answer-zone" class="min-h-[100px] bg-stone-50 border-2 border-dashed border-stone-300 rounded-2xl flex flex-wrap gap-3 items-center justify-center p-4 transition-all duration-200">
+                        <span id="answer-placeholder" class="text-stone-400 text-xs font-medium">Select syllable tiles from the bank below in correct order</span>
+                    </div>
+                </div>
+
+                <!-- Jumbled Syllables Bank -->
+                <div class="mb-8">
+                    <label class="block text-xs uppercase tracking-wider text-stone-500 font-bold mb-2">Available Syllable Bank:</label>
+                    <div id="syllable-bank" class="min-h-[100px] bg-[#f4efe9] border border-stone-200 rounded-2xl flex flex-wrap gap-3 items-center justify-center p-4 transition-all duration-200">
+                        <!-- Dynamic Tiles Rendered Here -->
+                    </div>
+                </div>
+
+                <!-- Gameplay Control Buttons -->
+                <div class="flex items-center gap-4">
+                    <button onclick="rollbackTiles()" class="bg-stone-100 hover:bg-stone-200 border border-stone-300 text-stone-700 font-extrabold py-3.5 px-6 rounded-2xl transition text-xs sm:text-sm flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                        Reset Bank
+                    </button>
+                    <button onclick="submitAnswer()" class="flex-1 bg-[#0c383b] hover:bg-[#144d51] text-white font-black py-4 px-6 rounded-2xl shadow-lg transition text-xs sm:text-sm tracking-wide flex items-center justify-center gap-2">
+                        <span>Check Arrangement</span>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                    </button>
+                </div>
+
+                <div id="feedback-msg" class="mt-4 text-center text-xs sm:text-sm font-extrabold h-6 transition-all"></div>
+
+            </div>
+
+        </section>
+
+        <!-- FEATURE CARDS SECTION -->
+        <section id="mission" class="mb-12 pt-4">
+            
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4">
+                <div>
+                    <span class="inline-block border border-stone-300 bg-white/60 text-stone-700 text-[11px] font-extrabold px-4 py-1 rounded-full uppercase tracking-wider mb-3">About Us</span>
+                    <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-[#0c383b] max-w-2xl leading-tight font-heading">
+                        Our mission is to provide individuals with valuable insights into their language skills
+                    </h2>
+                </div>
+            </div>
+
+            <!-- 3 Colorful Feature Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+                <!-- Card 1: Terracotta / Coral Card -->
+                <div class="feature-card bg-[#dc6547] text-white rounded-[2.2rem] p-7 flex flex-col justify-between relative overflow-hidden min-h-[340px] shadow-lg">
+                    <div class="flex justify-between items-start">
+                        <span class="border border-white/40 bg-white/10 backdrop-blur-md px-4 py-1.5 rounded-full text-xs font-bold tracking-wide">
+                            Our Mission
+                        </span>
+                        <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                        </div>
+                    </div>
+                    <div class="my-6 flex justify-center">
+                        <svg class="w-36 h-36 drop-shadow-md animate-wave-1" viewBox="0 0 160 160" fill="none">
+                            <circle cx="80" cy="80" r="65" fill="#e57358"/>
+                            <circle cx="80" cy="55" r="22" fill="#ffe4e6"/>
+                            <path d="M50 120 C50 85, 110 85, 110 120 Z" fill="#0c383b"/>
+                            <circle cx="80" cy="40" r="16" fill="#475569"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold font-heading mb-1">Interactive Syllable Mapping</h3>
+                        <p class="text-white/80 text-xs leading-relaxed">Break down complex technical vernacular into intuitive phonetic blocks for quick comprehension.</p>
+                    </div>
+                </div>
+
+                <!-- Card 2: Warm Yellow / Amber Card -->
+                <div class="feature-card bg-[#f4a736] text-[#0c383b] rounded-[2.2rem] p-7 flex flex-col justify-between relative overflow-hidden min-h-[340px] shadow-lg">
+                    <div class="flex justify-between items-start">
+                        <span class="border border-[#0c383b]/20 bg-[#0c383b]/10 backdrop-blur-md px-4 py-1.5 rounded-full text-xs font-extrabold tracking-wide">
+                            Our Expertise
+                        </span>
+                        <div class="w-8 h-8 rounded-full bg-[#0c383b]/10 flex items-center justify-center">
+                            <svg class="w-4 h-4 text-[#0c383b]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                        </div>
+                    </div>
+                    <div class="my-6 flex justify-center">
+                        <svg class="w-36 h-36 drop-shadow-md animate-wave-2" viewBox="0 0 160 160" fill="none">
+                            <circle cx="80" cy="80" r="65" fill="#f5b34d"/>
+                            <circle cx="80" cy="55" r="22" fill="#fef08a"/>
+                            <path d="M45 125 C45 80, 115 80, 115 125 Z" fill="#1f5e40"/>
+                            <path d="M60 40 Q80 20 100 40 Z" fill="#dc6547"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold font-heading mb-1">Precision & Accuracy</h3>
+                        <p class="text-[#0c383b]/80 text-xs leading-relaxed">Algorithmic metrics tailored to measure real-time speed, accuracy, and memory recall.</p>
+                    </div>
+                </div>
+
+                <!-- Card 3: Forest Green Card -->
+                <div class="feature-card bg-[#1f5e40] text-white rounded-[2.2rem] p-7 flex flex-col justify-between relative overflow-hidden min-h-[340px] shadow-lg">
+                    <div class="flex justify-between items-start">
+                        <span class="border border-white/40 bg-white/10 backdrop-blur-md px-4 py-1.5 rounded-full text-xs font-bold tracking-wide">
+                            Our Approach
+                        </span>
+                        <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                        </div>
+                    </div>
+                    <div class="my-6 flex justify-center">
+                        <svg class="w-36 h-36 drop-shadow-md animate-wave-3" viewBox="0 0 160 160" fill="none">
+                            <circle cx="80" cy="80" r="65" fill="#2a7753"/>
+                            <circle cx="80" cy="55" r="22" fill="#fed7aa"/>
+                            <path d="M45 125 C45 85, 115 85, 115 125 Z" fill="#f4a736"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold font-heading mb-1">Adaptive Progression</h3>
+                        <p class="text-white/80 text-xs leading-relaxed">Dynamic difficulty curves scaling from 2-syllables up to complex 4-syllable computer science terms.</p>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="border-t border-stone-300/60 pt-8 pb-4 flex flex-col sm:flex-row justify-between items-center text-xs text-stone-500 font-medium gap-4">
+            <div class="flex items-center gap-2">
+                <span class="font-extrabold text-[#0c383b] font-heading">SyllableX</span>
+                <span>© 2026. All rights reserved.</span>
+            </div>
+            <div class="flex items-center gap-6">
+                <a href="#" class="hover:text-[#0c383b] transition">Privacy Policy</a>
+                <a href="#" class="hover:text-[#0c383b] transition">Terms of Service</a>
+                <a href="#" onclick="showLeaderboardModal()" class="hover:text-[#0c383b] transition">Leaderboard</a>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- COMPLETION CELEBRATION MODAL -->
+    <div id="modal-complete" class="fixed inset-0 bg-stone-900/60 backdrop-blur-md hidden items-center justify-center p-4 z-50">
+        <div class="bg-white border border-stone-200 rounded-[2.8rem] p-8 sm:p-10 max-w-md w-full text-center shadow-2xl relative overflow-hidden animate-wave-1">
+            <div class="w-20 h-20 bg-emerald-100 border border-emerald-300 rounded-3xl flex items-center justify-center mx-auto mb-4 text-[#1f5e40] text-3xl font-bold shadow-inner">
+                🎉
+            </div>
+            <h2 class="text-3xl font-extrabold text-[#0c383b] mb-1 font-heading">Challenge Mastered!</h2>
+            <p class="text-stone-600 text-xs mb-5 font-medium">You completed all 20 syllable challenges with flying colors!</p>
+
+            <div class="bg-[#f4efe9] border border-stone-300/80 rounded-2xl p-4 mb-4 grid grid-cols-2 gap-4 text-center">
+                <div>
+                    <span class="text-[10px] uppercase text-stone-500 font-extrabold block">Final Score</span>
+                    <span id="modal-final-score" class="text-3xl font-black text-[#20a060] font-heading">200</span>
+                </div>
+                <div>
+                    <span class="text-[10px] uppercase text-stone-500 font-extrabold block">Total Time</span>
+                    <span id="modal-final-time" class="text-3xl font-black text-[#0c383b] font-mono">03:45</span>
+                </div>
+            </div>
+
+            <!-- Cloud Sync Status Indicator -->
+            <div id="modal-sync-indicator" class="text-xs font-semibold text-stone-500 mb-5 flex items-center justify-center gap-1.5 min-h-[20px]"></div>
+
+            <div class="flex gap-3">
+                <button onclick="showLeaderboardModal('cloud')" class="flex-1 bg-stone-100 hover:bg-stone-200 border border-stone-300 text-stone-800 font-bold py-3.5 rounded-2xl transition text-xs flex items-center justify-center gap-1.5">
+                    <span>🏆 Leaderboard</span>
+                </button>
+                <button onclick="restartGame()" class="flex-1 bg-[#0c383b] hover:bg-[#144d51] font-bold py-3.5 rounded-2xl text-white transition text-xs shadow-lg">
+                    Play Again
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- UPGRADED CLASSROOM LEADERBOARD MODAL -->
+    <div id="modal-leaderboard" class="fixed inset-0 bg-stone-900/60 backdrop-blur-md hidden items-center justify-center p-3 sm:p-4 z-50">
+        <div class="bg-white border border-stone-200 rounded-[2.5rem] p-5 sm:p-7 max-w-lg w-full shadow-2xl flex flex-col max-h-[88vh]">
+            
+            <!-- Modal Header -->
+            <div class="flex justify-between items-start mb-3 border-b border-stone-100 pb-3">
+                <div>
+                    <div class="flex items-center gap-2">
+                        <h2 class="text-xl sm:text-2xl font-extrabold text-[#0c383b] font-heading">🏆 SyllableX Leaderboard</h2>
+                        <span id="lb-live-indicator" class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-100 text-emerald-800 border border-emerald-300">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Live
+                        </span>
+                    </div>
+                    <p id="lb-subtitle" class="text-xs text-stone-500 font-medium mt-0.5">Rankings across all students</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button id="lb-refresh-btn" onclick="refreshLeaderboard()" class="w-9 h-9 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-600 hover:text-stone-900 flex items-center justify-center transition" title="Refresh Scores">
+                        <svg id="lb-refresh-icon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                    </button>
+                    <button onclick="closeLeaderboardModal()" class="w-9 h-9 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-600 hover:text-stone-900 flex items-center justify-center font-bold">✕</button>
+                </div>
+            </div>
+
+            <!-- Tab Switcher: Classroom (Google Sheet) vs Local Device -->
+            <div class="flex items-center bg-stone-100/90 p-1 rounded-2xl mb-3">
+                <button id="tab-cloud" onclick="switchLeaderboardTab('cloud')" class="flex-1 py-2 text-xs font-extrabold rounded-xl transition bg-white text-[#0c383b] shadow-sm flex items-center justify-center gap-1.5">
+                    <span>🌐 Classroom (All Students)</span>
+                </button>
+                <button id="tab-local" onclick="switchLeaderboardTab('local')" class="flex-1 py-2 text-xs font-extrabold rounded-xl transition text-stone-500 hover:text-stone-800 flex items-center justify-center gap-1.5">
+                    <span>📱 This Device</span>
+                </button>
+            </div>
+
+            <!-- Dynamic Status Banner -->
+            <div id="lb-status-banner" class="mb-3"></div>
+
+            <!-- Google Sheet Config Settings Box (Toggleable) -->
+            <div id="lb-settings-panel" class="hidden mb-3 bg-amber-50 border border-amber-200 rounded-2xl p-4 text-xs">
+                <div class="flex justify-between items-center mb-1.5 font-bold text-amber-900">
+                    <span class="flex items-center gap-1.5">⚙️ Google Sheet Web App Link</span>
+                    <button onclick="toggleDbSettings(false)" class="text-amber-700 hover:text-amber-900 font-extrabold text-sm">✕</button>
+                </div>
+                <p class="text-stone-600 mb-2 leading-relaxed text-[11px]">
+                    Paste the <strong>Web app URL</strong> from your Google Sheet deployment so all 30+ students submit to the same board:
+                </p>
+                <div class="flex gap-2 mb-2">
+                    <input type="text" id="input-sheet-url" placeholder="https://script.google.com/macros/s/.../exec"
+                        class="flex-1 bg-white border border-stone-300 rounded-xl px-3 py-2 text-xs text-stone-800 focus:outline-none focus:border-[#0c383b]">
+                    <button onclick="saveDbSettings()" class="bg-[#0c383b] hover:bg-[#144d51] text-white px-3.5 py-2 rounded-xl font-bold transition whitespace-nowrap text-xs">
+                        Save & Sync
+                    </button>
+                </div>
+                <div class="flex justify-between items-center text-[10px] text-stone-500">
+                    <span>See <code class="bg-amber-100 px-1 py-0.5 rounded text-amber-800 font-mono">GOOGLE_SHEET_SETUP_GUIDE.md</code></span>
+                    <button onclick="clearDbSettings()" class="text-rose-500 hover:underline">Clear URL</button>
+                </div>
+            </div>
+
+            <!-- Leaderboard List Items -->
+            <div class="overflow-y-auto flex-1 pr-1 space-y-2 mb-4 min-h-[220px]" id="leaderboard-list">
+                <!-- Dynamically populated -->
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="flex items-center justify-between gap-3 pt-2 border-t border-stone-100">
+                <button onclick="toggleDbSettings()" class="text-xs font-bold text-stone-500 hover:text-[#0c383b] px-3 py-2 rounded-xl hover:bg-stone-100 transition flex items-center gap-1.5" title="Google Sheet Database Connection">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                    <span>Connect Sheet</span>
+                </button>
+                <button onclick="closeLeaderboardModal()" class="flex-1 bg-stone-100 hover:bg-stone-200 border border-stone-300 text-stone-800 font-bold py-3 rounded-2xl transition text-xs">
+                    Back to SyllableX
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- AUDIO & GAME LOGIC ENGINE -->
+    <script>
+        // Web Audio Synthesizer for Zero-Dependency Sound Effects
+        class SoundFX {
+            constructor() {
+                this.ctx = null;
+            }
+
+            init() {
+                if (!this.ctx) {
+                    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                    if (AudioCtx) this.ctx = new AudioCtx();
+                }
+                if (this.ctx && this.ctx.state === 'suspended') {
+                    this.ctx.resume();
+                }
+            }
+
+            playPop() {
+                this.init();
+                if (!this.ctx) return;
+                try {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(440, this.ctx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(880, this.ctx.currentTime + 0.08);
+                    gain.gain.setValueAtTime(0.15, this.ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.08);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start();
+                    osc.stop(this.ctx.currentTime + 0.08);
+                } catch(e) {}
+            }
+
+            playSuccess() {
+                this.init();
+                if (!this.ctx) return;
+                try {
+                    const now = this.ctx.currentTime;
+                    const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+                    notes.forEach((freq, idx) => {
+                        const osc = this.ctx.createOscillator();
+                        const gain = this.ctx.createGain();
+                        osc.type = 'triangle';
+                        osc.frequency.setValueAtTime(freq, now + idx * 0.08);
+                        gain.gain.setValueAtTime(0.2, now + idx * 0.08);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.3);
+                        osc.connect(gain);
+                        gain.connect(this.ctx.destination);
+                        osc.start(now + idx * 0.08);
+                        osc.stop(now + idx * 0.08 + 0.3);
+                    });
+                } catch(e) {}
+            }
+
+            playError() {
+                this.init();
+                if (!this.ctx) return;
+                try {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(180, this.ctx.currentTime);
+                    osc.frequency.setValueAtTime(140, this.ctx.currentTime + 0.15);
+                    gain.gain.setValueAtTime(0.15, this.ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.25);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start();
+                    osc.stop(this.ctx.currentTime + 0.25);
+                } catch(e) {}
+            }
+        }
+
+        const sfx = new SoundFX();
+
+        // 3D Parallax Tilt Effect on Hero Mousemove
+        const heroCard = document.getElementById('hero-card');
+        if (heroCard) {
+            heroCard.addEventListener('mousemove', (e) => {
+                const rect = heroCard.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+                heroCard.style.transform = `perspective(1000px) rotateY(${x * 0.012}deg) rotateX(${-y * 0.012}deg)`;
+            });
+            heroCard.addEventListener('mouseleave', () => {
+                heroCard.style.transform = `perspective(1000px) rotateY(0deg) rotateX(0deg)`;
+            });
+        }
+
+        // Animated Counter Numbers on Load
+        function animateCounters() {
+            const wordsEl = document.getElementById('stat-words');
+            const accuracyEl = document.getElementById('stat-accuracy');
+            
+            let countW = 0;
+            let countA = 0;
+            const targetW = 8500;
+            const targetA = 97;
+
+            const timer = setInterval(() => {
+                countW += 250;
+                if (countW >= targetW) {
+                    countW = targetW;
+                }
+                wordsEl.innerText = countW.toLocaleString();
+
+                if (countA < targetA) countA += 3;
+                if (countA >= targetA) countA = targetA;
+                accuracyEl.innerText = countA;
+
+                if (countW === targetW && countA === targetA) {
+                    clearInterval(timer);
+                }
+            }, 30);
+        }
+        window.addEventListener('DOMContentLoaded', animateCounters);
+
+        // 20 High-Value Technical Syllable Challenges
+        const techWords = [
+            { word: "ALGORITHM", syllables: ["AL", "GO", "RITHM"], type: "3 Syllables", hint: "Step-by-step instructions or rules designed to solve a specific computational problem." },
+            { word: "COMPILER", syllables: ["COM", "PI", "LER"], type: "3 Syllables", hint: "Translates entire high-level source code into machine-executable binary code." },
+            { word: "ENCRYPTION", syllables: ["EN", "CRYP", "TION"], type: "3 Syllables", hint: "Converting readable plain text into ciphered data to secure confidentiality." },
+            { word: "DATABASE", syllables: ["DATA", "BASE"], type: "2 Syllables", hint: "An organized electronic collection of structured data accessible via query languages." },
+            { word: "DEBUGGING", syllables: ["DE", "BUG", "GING"], type: "3 Syllables", hint: "The systematic process of locating and correcting errors or bugs in software code." },
+            { word: "ROBOTICS", syllables: ["RO", "BO", "TICS"], type: "3 Syllables", hint: "Branch of tech integrating engineering and software for automated machine control." },
+            { word: "PROTOCOL", syllables: ["PRO", "TO", "COL"], type: "3 Syllables", hint: "Standardized rules governing data transmission and formatting across networks." },
+            { word: "FIRMWARE", syllables: ["FIRM", "WARE"], type: "2 Syllables", hint: "Low-level software permanently embedded into hardware non-volatile memory chips." },
+            { word: "NETWORKING", syllables: ["NET", "WORK", "ING"], type: "3 Syllables", hint: "Connecting computing devices together to share resources and communicate." },
+            { word: "BLOCKCHAIN", syllables: ["BLOCK", "CHAIN"], type: "2 Syllables", hint: "Decentralized distributed ledger recording encrypted transactional records securely." },
+            { word: "CYBERSPACE", syllables: ["CY", "BER", "SPACE"], type: "3 Syllables", hint: "The virtual computer environment consisting of interconnected global networks." },
+            { word: "MULTIMEDIA", syllables: ["MUL", "TI", "ME", "DIA"], type: "4 Syllables", hint: "Content combining audio, video, graphics, and interactive text processing." },
+            { word: "ARTIFICIAL", syllables: ["AR", "TI", "FI", "CIAL"], type: "4 Syllables", hint: "Machine simulation of human cognitive faculties, reasoning, and learning." },
+            { word: "INTELLIGENCE", syllables: ["IN", "TEL", "LI", "GENCE"], type: "4 Syllables", hint: "The computational capacity to acquire knowledge and execute complex decisions." },
+            { word: "INFRASTRUCTURE", syllables: ["IN", "FRA", "STRUC", "TURE"], type: "4 Syllables", hint: "The physical hardware and virtual framework supporting enterprise IT systems." },
+            { word: "AUTOMATION", syllables: ["AU", "TO", "MA", "TION"], type: "4 Syllables", hint: "Operating workflows and mechanical industrial processes automatically." },
+            { word: "COMPUTATION", syllables: ["COM", "PU", "TA", "TION"], type: "4 Syllables", hint: "Mathematical and algorithmic execution performed by a processor." },
+            { word: "APPLICATION", syllables: ["AP", "PLI", "CA", "TION"], type: "4 Syllables", hint: "End-user software program designed to perform specific productive tasks." },
+            { word: "PERIPHERAL", syllables: ["PE", "RIPH", "E", "RAL"], type: "4 Syllables", hint: "External hardware unit connected to a computer system (e.g. printer, scanner)." },
+            { word: "PROGRAMMING", syllables: ["PRO", "GRAM", "MING"], type: "3 Syllables", hint: "The craft of writing instructions that computers execute to perform tasks." }
+        ];
+
+        let gameState = {
+            playerName: "",
+            currentLevel: 0,
+            score: 0,
+            startTime: null,
+            overallTimerInterval: null,
+            questionTimerInterval: null,
+            secondsElapsed: 0,
+            questionTimeLeft: 30,
+            bankSyllables: [],   // Tiles currently in bank
+            answerSyllables: []  // Tiles currently placed in answer zone in EXACT order
+        };
+
+        function openRegistrationModal() {
+            document.getElementById('challenges').scrollIntoView({ behavior: 'smooth' });
+            document.getElementById('player-name').focus();
+        }
+
+        function startGame(e) {
+            if (e) e.preventDefault();
+            sfx.init();
+
+            gameState.playerName = document.getElementById('player-name').value.trim() || "Player One";
+            document.getElementById('display-player').innerText = gameState.playerName;
+
+            document.getElementById('screen-registration').classList.add('hidden');
+            document.getElementById('screen-game').classList.remove('hidden');
+
+            gameState.currentLevel = 0;
+            gameState.score = 0;
+            gameState.secondsElapsed = 0;
+            gameState.startTime = Date.now();
+
+            if (gameState.overallTimerInterval) clearInterval(gameState.overallTimerInterval);
+            gameState.overallTimerInterval = setInterval(updateOverallTimer, 1000);
+
+            loadLevel();
+        }
+
+        function updateOverallTimer() {
+            gameState.secondsElapsed++;
+            const mins = String(Math.floor(gameState.secondsElapsed / 60)).padStart(2, '0');
+            const secs = String(gameState.secondsElapsed % 60).padStart(2, '0');
+            document.getElementById('timer-display').innerText = `${mins}:${secs}`;
+        }
+
+        function startQuestionTimer() {
+            if (gameState.questionTimerInterval) clearInterval(gameState.questionTimerInterval);
+            gameState.questionTimeLeft = 30;
+            updateQuestionTimerDisplay();
+
+            gameState.questionTimerInterval = setInterval(() => {
+                gameState.questionTimeLeft--;
+                updateQuestionTimerDisplay();
+
+                if (gameState.questionTimeLeft <= 0) {
+                    clearInterval(gameState.questionTimerInterval);
+                    handleTimeOut();
+                }
+            }, 1000);
+        }
+
+        function updateQuestionTimerDisplay() {
+            const badge = document.getElementById('q-timer-badge');
+            const bar = document.getElementById('q-timer-bar');
+            badge.innerText = `⏱️ ${gameState.questionTimeLeft}s`;
+            const pct = (gameState.questionTimeLeft / 30) * 100;
+            bar.style.width = pct + '%';
+
+            if (gameState.questionTimeLeft <= 10) {
+                badge.className = "text-rose-600 bg-rose-100 px-3 py-1 rounded-full border border-rose-300 font-mono font-bold animate-pulse";
+                bar.className = "bg-rose-500 h-full transition-all duration-1000";
+            } else {
+                badge.className = "text-amber-700 bg-amber-50 px-3 py-1 rounded-full border border-amber-300 font-mono font-bold";
+                bar.className = "bg-[#f4a736] h-full transition-all duration-1000";
+            }
+        }
+
+        function handleTimeOut() {
+            sfx.playError();
+            const feedback = document.getElementById('feedback-msg');
+            feedback.innerText = "⏱️ Time's up! Moving to next challenge...";
+            feedback.className = "mt-4 text-center text-xs sm:text-sm font-extrabold text-rose-500 animate-shake";
+            
+            setTimeout(() => {
+                gameState.currentLevel++;
+                loadLevel();
+            }, 1200);
+        }
+
+        function shuffleArray(array) {
+            let arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            if (arr.join('') === array.join('') && arr.length > 1) {
+                return shuffleArray(array);
+            }
+            return arr;
+        }
+
+        function loadLevel() {
+            if (gameState.currentLevel >= techWords.length) {
+                endGame();
+                return;
+            }
+
+            const currentObj = techWords[gameState.currentLevel];
+            document.getElementById('level-indicator').innerText = `Level ${gameState.currentLevel + 1} of ${techWords.length}`;
+            document.getElementById('syllable-badge').innerText = currentObj.type;
+            document.getElementById('hint-text').innerText = currentObj.hint;
+            document.getElementById('score-display').innerText = gameState.score;
+            document.getElementById('feedback-msg').innerText = "";
+
+            const pct = ((gameState.currentLevel) / techWords.length) * 100;
+            document.getElementById('progress-bar').style.width = Math.max(pct, 5) + '%';
+
+            const shuffledTexts = shuffleArray(currentObj.syllables);
+            gameState.bankSyllables = shuffledTexts.map((text, idx) => ({
+                id: `syl-${gameState.currentLevel}-${idx}-${Math.random().toString(36).substr(2,4)}`,
+                text: text
+            }));
+            gameState.answerSyllables = [];
+
+            renderGameZones();
+            startQuestionTimer();
+        }
+
+        function renderGameZones() {
+            const bankEl = document.getElementById('syllable-bank');
+            const answerEl = document.getElementById('answer-zone');
+
+            bankEl.innerHTML = '';
+            answerEl.innerHTML = '';
+
+            if (gameState.bankSyllables.length === 0) {
+                bankEl.innerHTML = '<span class="text-stone-400 text-xs italic font-medium">All syllable tiles placed. Click "Check Arrangement".</span>';
+            } else {
+                gameState.bankSyllables.forEach(item => {
+                    bankEl.appendChild(createBankTileElement(item));
+                });
+            }
+
+            if (gameState.answerSyllables.length === 0) {
+                answerEl.innerHTML = '<span id="answer-placeholder" class="text-stone-400 text-xs font-medium">Select syllable tiles from the bank below in correct order</span>';
+            } else {
+                gameState.answerSyllables.forEach((item, index) => {
+                    answerEl.appendChild(createAnswerTileElement(item, index));
+                });
+            }
+        }
+
+        function createBankTileElement(item) {
+            const div = document.createElement('div');
+            div.id = item.id;
+            div.className = "tile bg-[#0c383b] hover:bg-[#144d51] text-white font-black px-5 py-3 rounded-2xl shadow-md text-sm tracking-widest flex items-center gap-2 border border-white/10 font-heading";
+            div.innerText = item.text;
+
+            div.addEventListener('click', () => {
+                sfx.playPop();
+                gameState.bankSyllables = gameState.bankSyllables.filter(s => s.id !== item.id);
+                gameState.answerSyllables.push(item);
+                renderGameZones();
+            });
+
+            return div;
+        }
+
+        function createAnswerTileElement(item, index) {
+            const div = document.createElement('div');
+            div.id = item.id;
+            div.draggable = true;
+            div.className = "tile bg-[#0c383b] hover:bg-[#144d51] text-white font-black px-5 py-3 rounded-2xl shadow-md text-sm tracking-widest flex items-center gap-2 border border-white/10 font-heading cursor-grab active:cursor-grabbing transform transition-all hover:scale-105";
+
+            const textSpan = document.createElement('span');
+            textSpan.innerText = item.text;
+            div.appendChild(textSpan);
+
+            const removeBtn = document.createElement('span');
+            removeBtn.className = "text-white/40 hover:text-rose-300 text-xs ml-1 font-sans";
+            removeBtn.innerHTML = "✕";
+            removeBtn.title = "Click to remove back to bank";
+            div.appendChild(removeBtn);
+
+            // Drag and Drop reordering handlers
+            div.addEventListener('dragstart', (e) => {
+                e.dataTransfer.setData('text/plain', index);
+                div.classList.add('opacity-40');
+            });
+
+            div.addEventListener('dragend', () => {
+                div.classList.remove('opacity-40');
+            });
+
+            div.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                div.classList.add('border-2', 'border-[#f4a736]');
+            });
+
+            div.addEventListener('dragleave', () => {
+                div.classList.remove('border-2', 'border-[#f4a736]');
+            });
+
+            div.addEventListener('drop', (e) => {
+                e.preventDefault();
+                div.classList.remove('border-2', 'border-[#f4a736]');
+                const fromIndex = parseInt(e.dataTransfer.getData('text/plain'));
+                const toIndex = index;
+
+                if (!isNaN(fromIndex) && fromIndex !== toIndex) {
+                    const movedItem = gameState.answerSyllables.splice(fromIndex, 1)[0];
+                    gameState.answerSyllables.splice(toIndex, 0, movedItem);
+                    sfx.playPop();
+                    renderGameZones();
+                }
+            });
+
+            // Click handler: Return tile back to bank
+            div.addEventListener('click', (e) => {
+                sfx.playPop();
+                gameState.answerSyllables = gameState.answerSyllables.filter(s => s.id !== item.id);
+                gameState.bankSyllables.push(item);
+                renderGameZones();
+            });
+
+            return div;
+        }
+
+        function rollbackTiles() {
+            sfx.playPop();
+            gameState.bankSyllables = [...gameState.bankSyllables, ...gameState.answerSyllables];
+            gameState.answerSyllables = [];
+            renderGameZones();
+            const feedback = document.getElementById('feedback-msg');
+            feedback.innerText = "Syllable tiles reset to bank.";
+            feedback.className = "mt-4 text-center text-xs sm:text-sm font-bold text-stone-500";
+        }
+
+        function triggerConfetti() {
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 70,
+                    spread: 60,
+                    origin: { y: 0.6 },
+                    colors: ['#0c383b', '#f4a736', '#dc6547', '#20a060']
+                });
+            }
+        }
+
+        function submitAnswer() {
+            const currentObj = techWords[gameState.currentLevel];
+            const feedback = document.getElementById('feedback-msg');
+
+            if (gameState.answerSyllables.length !== currentObj.syllables.length) {
+                sfx.playError();
+                feedback.innerText = "⚠️ Please place all syllable tiles in the answer zone first!";
+                feedback.className = "mt-4 text-center text-xs sm:text-sm font-extrabold text-amber-600 animate-shake";
+                setTimeout(() => feedback.classList.remove('animate-shake'), 450);
+                return;
+            }
+
+            const formedWord = gameState.answerSyllables.map(s => s.text).join("");
+
+            if (formedWord === currentObj.word) {
+                if (gameState.questionTimerInterval) clearInterval(gameState.questionTimerInterval);
+                sfx.playSuccess();
+                triggerConfetti();
+
+                feedback.innerText = `Correct! "${currentObj.word}" is arranged perfectly! 🎉`;
+                feedback.className = "mt-4 text-center text-xs sm:text-sm font-extrabold text-[#20a060]";
+                gameState.score += 10;
+                document.getElementById('score-display').innerText = gameState.score;
+
+                const ansZone = document.getElementById('answer-zone');
+                ansZone.classList.add('correct-glow');
+
+                setTimeout(() => {
+                    ansZone.classList.remove('correct-glow');
+                    gameState.currentLevel++;
+                    loadLevel();
+                }, 1100);
+
+            } else {
+                sfx.playError();
+                feedback.innerText = "❌ Incorrect arrangement! Drag tiles to reorder or hit Reset.";
+                feedback.className = "mt-4 text-center text-xs sm:text-sm font-extrabold text-rose-500 animate-shake";
+                
+                const ansZone = document.getElementById('answer-zone');
+                ansZone.classList.add('border-rose-500');
+
+                setTimeout(() => {
+                    ansZone.classList.remove('border-rose-500');
+                    feedback.classList.remove('animate-shake');
+                }, 1200);
+            }
+        }
+
+        function quitGame() {
+            if (confirm("Are you sure you want to quit your active challenge session?")) {
+                document.getElementById('screen-game').classList.add('hidden');
+                document.getElementById('screen-registration').classList.remove('hidden');
+                if (gameState.overallTimerInterval) clearInterval(gameState.overallTimerInterval);
+                if (gameState.questionTimerInterval) clearInterval(gameState.questionTimerInterval);
+            }
+        }
+
+        // ==============================================================
+        // CLOUD & LOCAL LEADERBOARD ENGINE (Google Sheets + LocalStorage)
+        // ==============================================================
+        
+        // Optional default URL if you want it hardcoded across all deployments:
+        const DEFAULT_CLOUD_SHEET_URL = "";
+
+        function getCloudSheetUrl() {
+            return (localStorage.getItem('syllablex_sheet_url') || DEFAULT_CLOUD_SHEET_URL || "").trim();
+        }
+
+        function setCloudSheetUrl(url) {
+            url = (url || "").trim();
+            if (url) {
+                localStorage.setItem('syllablex_sheet_url', url);
+            } else {
+                localStorage.removeItem('syllablex_sheet_url');
+            }
+        }
+
+        let activeLeaderboardTab = 'cloud';
+        let isFetchingCloud = false;
+
+        function endGame() {
+            if (gameState.overallTimerInterval) clearInterval(gameState.overallTimerInterval);
+            if (gameState.questionTimerInterval) clearInterval(gameState.questionTimerInterval);
+            
+            sfx.playSuccess();
+            triggerConfetti();
+
+            const mins = String(Math.floor(gameState.secondsElapsed / 60)).padStart(2, '0');
+            const secs = String(gameState.secondsElapsed % 60).padStart(2, '0');
+            const timeStr = `${mins}:${secs}`;
+
+            document.getElementById('modal-final-score').innerText = gameState.score;
+            document.getElementById('modal-final-time').innerText = timeStr;
+            document.getElementById('modal-complete').classList.remove('hidden');
+            document.getElementById('modal-complete').classList.add('flex');
+
+            const newEntry = {
+                name: gameState.playerName,
+                score: gameState.score,
+                time: timeStr,
+                seconds: gameState.secondsElapsed,
+                date: new Date().toLocaleDateString()
+            };
+
+            // 1. Immediately save to LocalStorage (works offline, never lost)
+            saveScoreToLocal(newEntry);
+
+            // 2. Sync to Classroom Cloud Database (Google Sheets)
+            const syncEl = document.getElementById('modal-sync-indicator');
+            const cloudUrl = getCloudSheetUrl();
+
+            if (syncEl) {
+                if (cloudUrl) {
+                    syncEl.innerHTML = `<span class="inline-block animate-spin text-sm">⏳</span> Syncing score to Classroom Leaderboard...`;
+                    syncEl.className = "text-xs font-bold text-stone-500 mb-4 flex items-center justify-center gap-1.5";
+                } else {
+                    syncEl.innerHTML = `<span>💾</span> Score saved locally on device.`;
+                    syncEl.className = "text-xs font-semibold text-stone-500 mb-4 flex items-center justify-center gap-1.5";
+                }
+            }
+
+            if (cloudUrl) {
+                submitScoreToCloud(newEntry).then((success) => {
+                    if (!syncEl) return;
+                    if (success) {
+                        syncEl.innerHTML = `<span>✅</span> Ranked on Live Classroom Leaderboard!`;
+                        syncEl.className = "text-xs font-extrabold text-emerald-600 mb-4 flex items-center justify-center gap-1.5";
+                    } else {
+                        syncEl.innerHTML = `<span>⚠️</span> Saved locally (Could not reach Google Sheet).`;
+                        syncEl.className = "text-xs font-bold text-amber-600 mb-4 flex items-center justify-center gap-1.5";
+                    }
+                });
+            }
+        }
+
+        function restartGame() {
+            document.getElementById('modal-complete').classList.add('hidden');
+            document.getElementById('modal-complete').classList.remove('flex');
+            document.getElementById('screen-game').classList.add('hidden');
+            document.getElementById('screen-registration').classList.remove('hidden');
+        }
+
+        function saveScoreToLocal(newEntry) {
+            let scores = JSON.parse(localStorage.getItem('syllablex_leaderboard') || '[]');
+            scores.push(newEntry);
+            scores.sort((a, b) => {
+                if (b.score !== a.score) return b.score - a.score;
+                return a.seconds - b.seconds;
+            });
+            scores = scores.slice(0, 30);
+            localStorage.setItem('syllablex_leaderboard', JSON.stringify(scores));
+        }
+
+        function getLocalScores() {
+            return JSON.parse(localStorage.getItem('syllablex_leaderboard') || '[]');
+        }
+
+        async function submitScoreToCloud(entry) {
+            const url = getCloudSheetUrl();
+            if (!url) return false;
+
+            try {
+                // In Google Apps Script, submission via GET avoids preflight CORS hurdles
+                const query = new URLSearchParams({
+                    action: 'add',
+                    name: entry.name,
+                    score: entry.score,
+                    time: entry.time,
+                    seconds: entry.seconds,
+                    date: entry.date
+                }).toString();
+
+                const separator = url.includes('?') ? '&' : '?';
+                const response = await fetch(`${url}${separator}${query}`, {
+                    method: 'GET',
+                    mode: 'cors'
+                });
+
+                if (!response.ok) return false;
+                const data = await response.json();
+                return data && data.status === 'success';
+            } catch (err) {
+                console.warn("Could not submit score to cloud:", err);
+                return false;
+            }
+        }
+
+        async function fetchCloudScores() {
+            const url = getCloudSheetUrl();
+            if (!url) return null;
+
+            try {
+                const separator = url.includes('?') ? '&' : '?';
+                const response = await fetch(`${url}${separator}t=${Date.now()}`, {
+                    method: 'GET',
+                    mode: 'cors'
+                });
+
+                if (!response.ok) throw new Error("HTTP " + response.status);
+                const data = await response.json();
+                if (data && data.status === 'success' && Array.isArray(data.leaderboard)) {
+                    return data;
+                }
+                return null;
+            } catch (err) {
+                console.warn("Cloud leaderboard fetch failed:", err);
+                return null;
+            }
+        }
+
+        function showLeaderboardModal(preferredTab) {
+            if (preferredTab) {
+                activeLeaderboardTab = preferredTab;
+            }
+            document.getElementById('modal-leaderboard').classList.remove('hidden');
+            document.getElementById('modal-leaderboard').classList.add('flex');
+
+            switchLeaderboardTab(activeLeaderboardTab);
+        }
+
+        function closeLeaderboardModal() {
+            document.getElementById('modal-leaderboard').classList.add('hidden');
+            document.getElementById('modal-leaderboard').classList.remove('flex');
+            toggleDbSettings(false);
+        }
+
+        function switchLeaderboardTab(tab) {
+            activeLeaderboardTab = tab;
+            const tabCloud = document.getElementById('tab-cloud');
+            const tabLocal = document.getElementById('tab-local');
+
+            if (tab === 'cloud') {
+                tabCloud.className = "flex-1 py-2 text-xs font-extrabold rounded-xl transition bg-white text-[#0c383b] shadow-sm flex items-center justify-center gap-1.5";
+                tabLocal.className = "flex-1 py-2 text-xs font-extrabold rounded-xl transition text-stone-500 hover:text-stone-800 flex items-center justify-center gap-1.5";
+                loadCloudLeaderboard();
+            } else {
+                tabLocal.className = "flex-1 py-2 text-xs font-extrabold rounded-xl transition bg-white text-[#0c383b] shadow-sm flex items-center justify-center gap-1.5";
+                tabCloud.className = "flex-1 py-2 text-xs font-extrabold rounded-xl transition text-stone-500 hover:text-stone-800 flex items-center justify-center gap-1.5";
+                loadLocalLeaderboard();
+            }
+        }
+
+        async function loadCloudLeaderboard(forceRefresh = false) {
+            const listEl = document.getElementById('leaderboard-list');
+            const bannerEl = document.getElementById('lb-status-banner');
+            const liveIndicator = document.getElementById('lb-live-indicator');
+            const url = getCloudSheetUrl();
+
+            // If no Google Sheet URL is configured yet
+            if (!url) {
+                if (liveIndicator) liveIndicator.className = "hidden";
+                bannerEl.innerHTML = `
+                    <div class="flex items-center justify-between p-3 bg-amber-50 border border-amber-200 rounded-2xl text-xs text-amber-900 gap-2">
+                        <div class="flex items-center gap-2">
+                            <span class="text-base">📢</span>
+                            <span class="font-medium text-[11px] sm:text-xs">Connect your Google Sheet so all 30+ students see each other!</span>
+                        </div>
+                        <button onclick="toggleDbSettings(true)" class="bg-[#0c383b] hover:bg-[#144d51] text-white px-3 py-1.5 rounded-xl font-extrabold text-[11px] whitespace-nowrap shadow-sm transition">
+                            Connect Sheet
+                        </button>
+                    </div>
+                `;
+
+                // Show local scores with helpful notice
+                const localScores = getLocalScores();
+                if (localScores.length > 0) {
+                    renderLeaderboardEntries(localScores, false);
+                } else {
+                    listEl.innerHTML = `
+                        <div class="text-center py-10 px-4 bg-stone-50/50 rounded-2xl border border-stone-200/60">
+                            <div class="text-3xl mb-2">🌐</div>
+                            <h4 class="font-bold text-[#0c383b] text-sm mb-1 font-heading">Classroom Cloud Mode Waiting</h4>
+                            <p class="text-stone-500 text-xs max-w-xs mx-auto leading-relaxed">
+                                No Google Sheet linked yet. Click <strong>"Connect Sheet"</strong> above to link your free Google Sheet in 2 minutes.
+                            </p>
+                        </div>
+                    `;
+                }
+                return;
+            }
+
+            // URL is configured! Show skeleton loader while fetching
+            if (liveIndicator) {
+                liveIndicator.className = "inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-100 text-emerald-800 border border-emerald-300";
+            }
+
+            listEl.innerHTML = `
+                <div class="space-y-2 py-4">
+                    <div class="h-14 bg-stone-100 animate-pulse rounded-2xl"></div>
+                    <div class="h-14 bg-stone-100 animate-pulse rounded-2xl opacity-75"></div>
+                    <div class="h-14 bg-stone-100 animate-pulse rounded-2xl opacity-50"></div>
+                </div>
+            `;
+
+            isFetchingCloud = true;
+            const data = await fetchCloudScores();
+            isFetchingCloud = false;
+
+            if (data && Array.isArray(data.leaderboard)) {
+                const count = data.totalStudents || data.leaderboard.length;
+                bannerEl.innerHTML = `
+                    <div class="flex items-center justify-between p-2.5 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-900 font-medium">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                            <span>Live Classroom Sheet: <strong class="font-extrabold text-emerald-950">${count} students ranked</strong></span>
+                        </div>
+                        <span class="text-[10px] text-emerald-700 font-mono font-bold bg-white/80 px-2 py-0.5 rounded-full border border-emerald-200">Synced</span>
+                    </div>
+                `;
+                renderLeaderboardEntries(data.leaderboard, true);
+            } else {
+                bannerEl.innerHTML = `
+                    <div class="flex items-center justify-between p-2.5 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-800">
+                        <span>⚠️ Could not fetch from Google Sheet. Showing local scores.</span>
+                        <button onclick="toggleDbSettings(true)" class="underline font-bold text-xs ml-2">Check URL</button>
+                    </div>
+                `;
+                renderLeaderboardEntries(getLocalScores(), false);
+            }
+        }
+
+        function loadLocalLeaderboard() {
+            const bannerEl = document.getElementById('lb-status-banner');
+            const liveIndicator = document.getElementById('lb-live-indicator');
+            if (liveIndicator) liveIndicator.className = "hidden";
+
+            bannerEl.innerHTML = `
+                <div class="p-2.5 bg-stone-100 border border-stone-200 rounded-xl text-xs text-stone-600 font-medium flex items-center justify-between">
+                    <span>📱 Showing scores completed solely on this device browser.</span>
+                    <span class="text-[10px] font-mono font-bold bg-stone-200/80 px-2 py-0.5 rounded text-stone-700">Offline Safe</span>
+                </div>
+            `;
+            renderLeaderboardEntries(getLocalScores(), false);
+        }
+
+        function renderLeaderboardEntries(scores, isCloud) {
+            const listEl = document.getElementById('leaderboard-list');
+            listEl.innerHTML = '';
+
+            if (!scores || scores.length === 0) {
+                listEl.innerHTML = `
+                    <div class="text-center py-10 px-4 bg-stone-50 rounded-2xl border border-stone-200">
+                        <div class="text-3xl mb-2">🏅</div>
+                        <p class="text-stone-700 font-extrabold text-xs sm:text-sm font-heading">No Scores Recorded Yet!</p>
+                        <p class="text-stone-400 text-[11px] mt-1">${isCloud ? 'Be the first student to finish all 20 puzzles and take the #1 crown!' : 'No completed challenges stored on this browser.'}</p>
+                    </div>
+                `;
+                return;
+            }
+
+            scores.forEach((item, index) => {
+                const isCurrentPlayer = gameState.playerName && (item.name.toLowerCase().trim() === gameState.playerName.toLowerCase().trim());
+                const row = document.createElement('div');
+                
+                let rankBadge = `#${index + 1}`;
+                let cardStyle = "bg-white border-stone-200 hover:border-stone-300";
+
+                if (index === 0) {
+                    rankBadge = '🥇';
+                    cardStyle = "bg-amber-50/80 border-amber-300 shadow-sm";
+                } else if (index === 1) {
+                    rankBadge = '🥈';
+                    cardStyle = "bg-slate-50 border-slate-300 shadow-sm";
+                } else if (index === 2) {
+                    rankBadge = '🥉';
+                    cardStyle = "bg-orange-50/70 border-orange-300 shadow-sm";
+                }
+
+                if (isCurrentPlayer) {
+                    cardStyle += " ring-2 ring-[#0c383b] ring-offset-1";
+                }
+
+                row.className = `flex items-center justify-between p-3.5 rounded-2xl border transition ${cardStyle}`;
+
+                row.innerHTML = `
+                    <div class="flex items-center gap-3 min-w-0 pr-2">
+                        <span class="font-black w-7 text-center text-sm ${index < 3 ? 'text-lg' : 'text-stone-400 font-heading'}">${rankBadge}</span>
+                        <div class="min-w-0 truncate">
+                            <div class="flex items-center gap-1.5 flex-wrap">
+                                <h4 class="font-extrabold text-stone-800 text-xs sm:text-sm font-heading truncate">${escapeHtml(item.name)}</h4>
+                                ${isCurrentPlayer ? '<span class="text-[9px] bg-[#0c383b] text-white font-black px-1.5 py-0.2 rounded-full">YOU</span>' : ''}
+                            </div>
+                            <span class="text-[10px] text-stone-400 font-semibold">• ${escapeHtml(item.date || 'Today')}</span>
+                        </div>
+                    </div>
+                    <div class="text-right flex-shrink-0">
+                        <span class="text-xs sm:text-sm font-black text-[#20a060] block font-heading">${item.score} pts</span>
+                        <span class="text-[10px] text-stone-500 font-mono font-bold bg-stone-100 px-1.5 py-0.5 rounded border border-stone-200">${item.time}</span>
+                    </div>
+                `;
+
+                listEl.appendChild(row);
+            });
+        }
+
+        async function refreshLeaderboard() {
+            const icon = document.getElementById('lb-refresh-icon');
+            if (icon) icon.classList.add('animate-spin');
+
+            if (activeLeaderboardTab === 'cloud') {
+                await loadCloudLeaderboard(true);
+            } else {
+                loadLocalLeaderboard();
+            }
+
+            setTimeout(() => {
+                if (icon) icon.classList.remove('animate-spin');
+            }, 600);
+        }
+
+        function toggleDbSettings(forceState) {
+            const panel = document.getElementById('lb-settings-panel');
+            const input = document.getElementById('input-sheet-url');
+            if (!panel) return;
+
+            const shouldOpen = (forceState !== undefined) ? forceState : panel.classList.contains('hidden');
+
+            if (shouldOpen) {
+                input.value = getCloudSheetUrl();
+                panel.classList.remove('hidden');
+                input.focus();
+            } else {
+                panel.classList.add('hidden');
+            }
+        }
+
+        function saveDbSettings() {
+            const input = document.getElementById('input-sheet-url');
+            const url = (input.value || "").trim();
+
+            if (url && !url.startsWith('http')) {
+                alert("Please enter a valid Web app URL starting with https://script.google.com/...");
+                return;
+            }
+
+            setCloudSheetUrl(url);
+            toggleDbSettings(false);
+            switchLeaderboardTab('cloud');
+        }
+
+        function clearDbSettings() {
+            if (confirm("Reset to default sheet URL?")) {
+                setCloudSheetUrl("");
+                toggleDbSettings(false);
+                switchLeaderboardTab('cloud');
+            }
+        }
+
+        function escapeHtml(text) {
+            if (!text) return "";
+            return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+        }
+    </script>
+</body>
+</html>
