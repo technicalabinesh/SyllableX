@@ -1147,7 +1147,7 @@
         // ==============================================================
         
         // Optional default URL if you want it hardcoded across all deployments:
-        const DEFAULT_CLOUD_SHEET_URL = "https://script.google.com/macros/s/AKfycbweOqf4A-7jcDVxEorp9VmSYDOJBN1ThH-4CFf9QB90yicMQZ4EpdCElnyYzcPlY8tXkQ/exec";
+        const DEFAULT_CLOUD_SHEET_URL = "https://sheetdb.io/api/v1/z08731z65q0dh";
 
         function getCloudSheetUrl() {
             return (localStorage.getItem('syllablex_sheet_url') || DEFAULT_CLOUD_SHEET_URL || "").trim();
@@ -1266,11 +1266,10 @@
                         },
                         body: JSON.stringify({
                             data: [{
-                                "Timestamp": new Date().toLocaleString(),
                                 "Student Name": entry.name,
                                 "Score": entry.score,
-                                "Time (MM:SS)": entry.time,
-                                "Seconds Elapsed": entry.seconds,
+                                "Time": entry.time,
+                                "Second Elapsed": entry.seconds,
                                 "Date": entry.date
                             }]
                         })
@@ -1327,11 +1326,11 @@
                     if (!Array.isArray(rawData)) return { status: 'success', totalStudents: 0, leaderboard: [] };
 
                     const rawList = rawData.map(r => ({
-                        name: r["Student Name"] || r.name || "Student",
-                        score: Number(r["Score"] || r.score || 0),
-                        time: r["Time (MM:SS)"] || r.time || "00:00",
-                        seconds: Number(r["Seconds Elapsed"] || r.seconds || 0),
-                        date: r["Date"] || r.date || ""
+                        name: r["Student Name"] || r["name"] || "Student",
+                        score: Number(r["Score"] || r["score"] || 0),
+                        time: r["Time"] || r["Time (MM:SS)"] || r["time"] || "00:00",
+                        seconds: Number(r["Second Elapsed"] || r["Seconds Elapsed"] || r["seconds"] || 0),
+                        date: r["Date"] || r["date"] || ""
                     }));
 
                     const bestAttempts = {};
