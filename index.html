@@ -1242,30 +1242,46 @@
             return JSON.parse(localStorage.getItem('syllablex_leaderboard') || '[]');
         }
 
+        function isFirebaseUrl(url) {
+            return url && (url.includes('firebaseio.com') || url.includes('firebasedatabase.app'));
+        }
+
         async function submitScoreToCloud(entry) {
             const url = getCloudSheetUrl();
             if (!url) return false;
 
             try {
-                // In Google Apps Script, submission via GET avoids preflight CORS hurdles
-                const query = new URLSearchParams({
-                    action: 'add',
-                    name: entry.name,
-                    score: entry.score,
-                    time: entry.time,
-                    seconds: entry.seconds,
-                    date: entry.date
-                }).toString();
+                if (isFirebaseUrl(url)) {
+                    // Firebase Realtime Database REST API (Zero OAuth / Zero Permissions needed!)
+                    const baseUrl = url.replace(/\/+$/, '');
+                    const endpoint = baseUrl.endsWith('.json') ? baseUrl : `${baseUrl}/scores.json`;
+                    const response = await fetch(endpoint, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(entry)
+                    });
+                    return response.ok;
+                } else {
+                    // Google Apps Script GET Query
+                    const query = new URLSearchParams({
+                        action: 'add',
+                        name: entry.name,
+                        score: entry.score,
+                        time: entry.time,
+                        seconds: entry.seconds,
+                        date: entry.date
+                    }).toString();
 
-                const separator = url.includes('?') ? '&' : '?';
-                const response = await fetch(`${url}${separator}${query}`, {
-                    method: 'GET',
-                    mode: 'cors'
-                });
+                    const separator = url.includes('?') ? '&' : '?';
+                    const response = await fetch(`${url}${separator}${query}`, {
+                        method: 'GET',
+                        mode: 'cors'
+                    });
 
-                if (!response.ok) return false;
-                const data = await response.json();
-                return data && data.status === 'success';
+                    if (!response.ok) return false;
+                    const data = await response.json();
+                    return data && data.status === 'success';
+                }
             } catch (err) {
                 console.warn("Could not submit score to cloud:", err);
                 return false;
@@ -1277,18 +1293,60 @@
             if (!url) return null;
 
             try {
-                const separator = url.includes('?') ? '&' : '?';
-                const response = await fetch(`${url}${separator}t=${Date.now()}`, {
-                    method: 'GET',
-                    mode: 'cors'
-                });
+                if (isFirebaseUrl(url)) {
+                    // Firebase Realtime Database REST fetch
+                    const baseUrl = url.replace(/\/+$/, '');
+                    const endpoint = baseUrl.endsWith('.json') ? baseUrl : `${baseUrl}/scores.json`;
+                    const separator = endpoint.includes('?') ? '&' : '?';
+                    const response = await fetch(`${endpoint}${separator}t=${Date.now()}`);
 
-                if (!response.ok) throw new Error("HTTP " + response.status);
-                const data = await response.json();
-                if (data && data.status === 'success' && Array.isArray(data.leaderboard)) {
-                    return data;
+                    if (!response.ok) throw new Error("HTTP " + response.status);
+                    const rawData = await response.json();
+                    if (!rawData) return { status: 'success', totalStudents: 0, leaderboard: [] };
+
+                    // Firebase stores rows as an object with push keys: { [key]: entry, ... }
+                    const rawList = Object.values(rawData);
+
+                    // Deduplicate: Keep each student's personal best attempt
+                    const bestAttempts = {};
+                    rawList.forEach(item => {
+                        if (!item || !item.name) return;
+                        const key = item.name.toLowerCase().trim();
+                        if (!bestAttempts[key]) {
+                            bestAttempts[key] = item;
+                        } else {
+                            if (item.score > bestAttempts[key].score ||
+                               (item.score === bestAttempts[key].score && item.seconds < bestAttempts[key].seconds)) {
+                                bestAttempts[key] = item;
+                            }
+                        }
+                    });
+
+                    const sorted = Object.values(bestAttempts).sort((a, b) => {
+                        if (b.score !== a.score) return b.score - a.score;
+                        return a.seconds - b.seconds;
+                    });
+
+                    return {
+                        status: 'success',
+                        totalStudents: sorted.length,
+                        leaderboard: sorted
+                    };
+                } else {
+                    // Google Apps Script
+                    const separator = url.includes('?') ? '&' : '?';
+                    const response = await fetch(`${url}${separator}t=${Date.now()}`, {
+                        method: 'GET',
+                        mode: 'cors'
+                    });
+
+                    if (!response.ok) throw new Error("HTTP " + response.status);
+                    const data = await response.json();
+                    if (data && data.status === 'success' && Array.isArray(data.leaderboard)) {
+                        return data;
+                    }
+                    return null;
                 }
-                return null;
             } catch (err) {
                 console.warn("Cloud leaderboard fetch failed:", err);
                 return null;
