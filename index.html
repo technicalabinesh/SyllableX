@@ -1147,7 +1147,7 @@
         // ==============================================================
         
         // Optional default URL if you want it hardcoded across all deployments:
-        const DEFAULT_CLOUD_SHEET_URL = "https://script.google.com/macros/s/AKfycbxwdybY-aaSQ93tndxtlrqqfG8_E1CfLTUb7wASMagYnLWBGbRsY2R0AbGocDO1eKjbAA/exec";
+        const DEFAULT_CLOUD_SHEET_URL = "https://script.google.com/macros/s/AKfycbweOqf4A-7jcDVxEorp9VmSYDOJBN1ThH-4CFf9QB90yicMQZ4EpdCElnyYzcPlY8tXkQ/exec";
 
         function getCloudSheetUrl() {
             return (localStorage.getItem('syllablex_sheet_url') || DEFAULT_CLOUD_SHEET_URL || "").trim();
@@ -1246,12 +1246,37 @@
             return url && (url.includes('firebaseio.com') || url.includes('firebasedatabase.app'));
         }
 
+        function isSheetDbUrl(url) {
+            return url && url.includes('sheetdb.io');
+        }
+
         async function submitScoreToCloud(entry) {
             const url = getCloudSheetUrl();
             if (!url) return false;
 
             try {
-                if (isFirebaseUrl(url)) {
+                if (isSheetDbUrl(url)) {
+                    // SheetDB REST API (Direct Google Sheet integration with no Apps Script!)
+                    const cleanUrl = url.replace(/\/+$/, '');
+                    const response = await fetch(cleanUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            data: [{
+                                "Timestamp": new Date().toLocaleString(),
+                                "Student Name": entry.name,
+                                "Score": entry.score,
+                                "Time (MM:SS)": entry.time,
+                                "Seconds Elapsed": entry.seconds,
+                                "Date": entry.date
+                            }]
+                        })
+                    });
+                    return response.ok;
+                } else if (isFirebaseUrl(url)) {
                     // Firebase Realtime Database REST API (Zero OAuth / Zero Permissions needed!)
                     const baseUrl = url.replace(/\/+$/, '');
                     const endpoint = baseUrl.endsWith('.json') ? baseUrl : `${baseUrl}/scores.json`;
@@ -1293,7 +1318,47 @@
             if (!url) return null;
 
             try {
-                if (isFirebaseUrl(url)) {
+                if (isSheetDbUrl(url)) {
+                    // SheetDB REST Fetch
+                    const cleanUrl = url.replace(/\/+$/, '');
+                    const response = await fetch(`${cleanUrl}?t=${Date.now()}`);
+                    if (!response.ok) throw new Error("HTTP " + response.status);
+                    const rawData = await response.json();
+                    if (!Array.isArray(rawData)) return { status: 'success', totalStudents: 0, leaderboard: [] };
+
+                    const rawList = rawData.map(r => ({
+                        name: r["Student Name"] || r.name || "Student",
+                        score: Number(r["Score"] || r.score || 0),
+                        time: r["Time (MM:SS)"] || r.time || "00:00",
+                        seconds: Number(r["Seconds Elapsed"] || r.seconds || 0),
+                        date: r["Date"] || r.date || ""
+                    }));
+
+                    const bestAttempts = {};
+                    rawList.forEach(item => {
+                        if (!item || !item.name) return;
+                        const key = item.name.toLowerCase().trim();
+                        if (!bestAttempts[key]) {
+                            bestAttempts[key] = item;
+                        } else {
+                            if (item.score > bestAttempts[key].score ||
+                               (item.score === bestAttempts[key].score && item.seconds < bestAttempts[key].seconds)) {
+                                bestAttempts[key] = item;
+                            }
+                        }
+                    });
+
+                    const sorted = Object.values(bestAttempts).sort((a, b) => {
+                        if (b.score !== a.score) return b.score - a.score;
+                        return a.seconds - b.seconds;
+                    });
+
+                    return {
+                        status: 'success',
+                        totalStudents: sorted.length,
+                        leaderboard: sorted
+                    };
+                } else if (isFirebaseUrl(url)) {
                     // Firebase Realtime Database REST fetch
                     const baseUrl = url.replace(/\/+$/, '');
                     const endpoint = baseUrl.endsWith('.json') ? baseUrl : `${baseUrl}/scores.json`;
