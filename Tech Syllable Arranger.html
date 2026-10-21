@@ -174,7 +174,7 @@
                 <a href="#hero" class="hover:text-[#0c383b] transition border-b-2 border-transparent hover:border-[#0c383b] py-1">Home</a>
                 <a href="#challenges" class="hover:text-[#0c383b] transition border-b-2 border-transparent hover:border-[#0c383b] py-1">Syllable Puzzles</a>
                 <a href="#mission" class="hover:text-[#0c383b] transition border-b-2 border-transparent hover:border-[#0c383b] py-1">Features</a>
-                <a href="#" onclick="showLeaderboardModal()" class="hover:text-[#0c383b] transition border-b-2 border-transparent hover:border-[#0c383b] py-1">Leaderboard</a>
+                <a href="#leaderboard" onclick="scrollToLeaderboard(); return false;" class="hover:text-[#0c383b] transition border-b-2 border-transparent hover:border-[#0c383b] py-1 flex items-center gap-1 font-bold text-amber-900 md:text-stone-700">🏆 Leaderboard</a>
             </nav>
 
             <!-- Action Controls -->
@@ -241,8 +241,8 @@
                             <button onclick="openRegistrationModal()" class="btn-sweep bg-[#f4a736] hover:bg-[#f5b34d] text-[#0c383b] font-extrabold text-xs sm:text-sm px-7 py-3.5 rounded-full shadow-xl transition transform hover:-translate-y-1 active:scale-95 flex items-center gap-2">
                                 <span>Start First Puzzle</span>
                             </button>
-                            <button onclick="showLeaderboardModal()" class="bg-transparent hover:bg-white/10 text-white border border-white/40 hover:border-white font-bold text-xs sm:text-sm px-6 py-3.5 rounded-full transition transform hover:-translate-y-0.5">
-                                Check Leaderboard
+                            <button onclick="scrollToLeaderboard()" class="bg-transparent hover:bg-white/10 text-white border border-white/40 hover:border-white font-bold text-xs sm:text-sm px-6 py-3.5 rounded-full transition transform hover:-translate-y-0.5 flex items-center gap-2">
+                                <span>🏆 View Leaderboard</span>
                             </button>
                         </div>
                     </div>
@@ -411,7 +411,12 @@
                             <span class="text-[10px] uppercase text-stone-400 block font-extrabold">Current Score</span>
                             <span id="score-display" class="text-2xl font-black text-[#20a060]">0</span>
                         </div>
-                        <button onclick="quitGame()" class="text-stone-400 hover:text-rose-600 text-xs font-bold px-3 py-1.5 rounded-xl border border-stone-200 hover:border-rose-300 transition">Quit</button>
+                        <div class="flex items-center gap-2">
+                            <button onclick="finishAndSubmitEarly()" class="bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 text-xs font-bold px-3 py-1.5 rounded-xl transition flex items-center gap-1 shadow-sm" title="Finish and submit current score to classroom leaderboard">
+                                <span>Finish & Rank</span>
+                            </button>
+                            <button onclick="quitGame()" class="text-stone-400 hover:text-rose-600 text-xs font-bold px-3 py-1.5 rounded-xl border border-stone-200 hover:border-rose-300 transition">Quit</button>
+                        </div>
                     </div>
                 </div>
 
@@ -471,6 +476,66 @@
 
                 <div id="feedback-msg" class="mt-4 text-center text-xs sm:text-sm font-extrabold h-6 transition-all"></div>
 
+            </div>
+
+        </section>
+
+        <!-- LIVE CLASSROOM LEADERBOARD SECTION (Visible to everyone on the page) -->
+        <section id="leaderboard" class="mb-16 pt-6">
+            
+            <!-- Section Header -->
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4">
+                <div>
+                    <div class="flex items-center gap-2 mb-2 flex-wrap">
+                        <span class="inline-block border border-amber-300 bg-amber-100/80 text-amber-900 text-[11px] font-black px-3.5 py-1 rounded-full uppercase tracking-wider">
+                            🏆 Live Classroom Leaderboard
+                        </span>
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-black uppercase tracking-wider bg-emerald-100 text-emerald-800 border border-emerald-300">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Live Sheet Connected
+                        </span>
+                    </div>
+                    <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-[#0c383b] leading-tight font-heading">
+                        All Student Rankings & Scores
+                    </h2>
+                    <p class="text-stone-500 text-xs sm:text-sm mt-1 max-w-xl">
+                        Scores submitted by all 30+ students update here in real time. Ties broken by shortest completion time!
+                    </p>
+                </div>
+                
+                <div class="flex items-center gap-3">
+                    <button onclick="refreshEmbeddedLeaderboard()" class="bg-white hover:bg-stone-100 border border-stone-300 shadow-sm text-[#0c383b] font-bold text-xs px-4 py-2.5 rounded-2xl flex items-center gap-2 transition transform active:scale-95">
+                        <svg id="embedded-refresh-icon" class="w-4 h-4 text-stone-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                        <span>Refresh Scores</span>
+                    </button>
+                    <button onclick="showLeaderboardModal('cloud')" class="bg-[#0c383b] hover:bg-[#144d51] text-white font-bold text-xs px-5 py-2.5 rounded-2xl shadow-md transition transform active:scale-95 flex items-center gap-1.5">
+                        <span>Full Modal View</span>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Top 3 Podium Cards -->
+            <div id="podium-container" class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
+                <!-- Dynamically populated top 3 podium -->
+            </div>
+
+            <!-- Full Classroom Standings List (Ranks 4 - 30+) -->
+            <div class="bg-white rounded-[2.5rem] p-6 sm:p-8 shadow-xl border border-stone-200/90 relative overflow-hidden">
+                <div class="flex justify-between items-center mb-5 border-b border-stone-100 pb-4">
+                    <div>
+                        <h3 class="font-extrabold text-[#0c383b] text-base sm:text-lg font-heading">
+                            Classroom Standings
+                        </h3>
+                        <span id="embedded-total-count" class="text-xs text-stone-400 font-semibold">Loading students...</span>
+                    </div>
+                    <span class="text-[11px] bg-stone-100 text-stone-600 font-mono font-bold px-3 py-1 rounded-full border border-stone-200">
+                        Auto-Updating Live
+                    </span>
+                </div>
+
+                <div id="embedded-leaderboard-list" class="space-y-2.5 max-h-[500px] overflow-y-auto pr-1">
+                    <!-- Populated dynamically -->
+                </div>
             </div>
 
         </section>
@@ -604,8 +669,8 @@
             <div id="modal-sync-indicator" class="text-xs font-semibold text-stone-500 mb-5 flex items-center justify-center gap-1.5 min-h-[20px]"></div>
 
             <div class="flex gap-3">
-                <button onclick="showLeaderboardModal('cloud')" class="flex-1 bg-stone-100 hover:bg-stone-200 border border-stone-300 text-stone-800 font-bold py-3.5 rounded-2xl transition text-xs flex items-center justify-center gap-1.5">
-                    <span>🏆 Leaderboard</span>
+                <button onclick="document.getElementById('modal-complete').classList.add('hidden'); document.getElementById('modal-complete').classList.remove('flex'); scrollToLeaderboard();" class="flex-1 bg-amber-50 hover:bg-amber-100 border border-amber-300 text-amber-900 font-extrabold py-3.5 rounded-2xl transition text-xs flex items-center justify-center gap-1.5 shadow-sm">
+                    <span>🏆 View Standings</span>
                 </button>
                 <button onclick="restartGame()" class="flex-1 bg-[#0c383b] hover:bg-[#144d51] font-bold py-3.5 rounded-2xl text-white transition text-xs shadow-lg">
                     Play Again
@@ -809,7 +874,11 @@
                 }
             }, 30);
         }
-        window.addEventListener('DOMContentLoaded', animateCounters);
+        window.addEventListener('DOMContentLoaded', () => {
+            animateCounters();
+            loadEmbeddedLeaderboard();
+            setInterval(loadEmbeddedLeaderboard, 20000);
+        });
 
         // 20 High-Value Technical Syllable Challenges
         const techWords = [
@@ -1133,7 +1202,28 @@
             }
         }
 
+        function finishAndSubmitEarly() {
+            if (gameState.score === 0) {
+                if (!confirm("You currently have 0 points. End your active session?")) return;
+                document.getElementById('screen-game').classList.add('hidden');
+                document.getElementById('screen-registration').classList.remove('hidden');
+                if (gameState.overallTimerInterval) clearInterval(gameState.overallTimerInterval);
+                if (gameState.questionTimerInterval) clearInterval(gameState.questionTimerInterval);
+                return;
+            }
+            if (confirm(`Finish challenge now and submit your score of ${gameState.score} pts to the classroom leaderboard?`)) {
+                endGame();
+            }
+        }
+
         function quitGame() {
+            if (gameState.score > 0) {
+                const save = confirm(`You have scored ${gameState.score} points! Would you like to submit your score to the classroom leaderboard before leaving?`);
+                if (save) {
+                    endGame();
+                    return;
+                }
+            }
             if (confirm("Are you sure you want to quit your active challenge session?")) {
                 document.getElementById('screen-game').classList.add('hidden');
                 document.getElementById('screen-registration').classList.remove('hidden');
@@ -1150,7 +1240,13 @@
         const DEFAULT_CLOUD_SHEET_URL = "https://sheetdb.io/api/v1/z08731z65q0dh";
 
         function getCloudSheetUrl() {
-            return (localStorage.getItem('syllablex_sheet_url') || DEFAULT_CLOUD_SHEET_URL || "").trim();
+            let saved = (localStorage.getItem('syllablex_sheet_url') || "").trim();
+            // Automatically heal any old broken Google Apps Script URLs from user devices
+            if (!saved || saved.includes('script.google.com')) {
+                saved = DEFAULT_CLOUD_SHEET_URL;
+                localStorage.setItem('syllablex_sheet_url', DEFAULT_CLOUD_SHEET_URL);
+            }
+            return saved;
         }
 
         function setCloudSheetUrl(url) {
@@ -1208,6 +1304,7 @@
 
             if (cloudUrl) {
                 submitScoreToCloud(newEntry).then((success) => {
+                    loadEmbeddedLeaderboard();
                     if (!syncEl) return;
                     if (success) {
                         syncEl.innerHTML = `<span>✅</span> Ranked on Live Classroom Leaderboard!`;
@@ -1652,7 +1749,178 @@
                 setCloudSheetUrl("");
                 toggleDbSettings(false);
                 switchLeaderboardTab('cloud');
+                loadEmbeddedLeaderboard();
             }
+        }
+
+        function scrollToLeaderboard() {
+            const el = document.getElementById('leaderboard');
+            if (el) {
+                el.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                showLeaderboardModal();
+            }
+        }
+
+        async function loadEmbeddedLeaderboard() {
+            const podiumEl = document.getElementById('podium-container');
+            const listEl = document.getElementById('embedded-leaderboard-list');
+            const countEl = document.getElementById('embedded-total-count');
+            if (!podiumEl || !listEl) return;
+
+            const data = await fetchCloudScores();
+            if (!data || !Array.isArray(data.leaderboard) || data.leaderboard.length === 0) {
+                podiumEl.innerHTML = `
+                    <div class="col-span-1 md:col-span-3 text-center py-8 bg-amber-50/70 border border-amber-200 rounded-3xl p-6">
+                        <div class="text-3xl mb-2">⚡</div>
+                        <h4 class="font-extrabold text-[#0c383b] text-base mb-1 font-heading">Classroom Leaderboard is Ready!</h4>
+                        <p class="text-stone-600 text-xs max-w-md mx-auto">
+                            No students have recorded scores yet. Enter your alias above and complete challenges to claim the #1 Champion crown!
+                        </p>
+                    </div>
+                `;
+                listEl.innerHTML = '<div class="text-center py-6 text-stone-400 text-xs italic">Waiting for students to submit scores...</div>';
+                if (countEl) countEl.innerText = "0 Students Ranked";
+                return;
+            }
+
+            const scores = data.leaderboard;
+            if (countEl) countEl.innerText = `${scores.length} Students Ranked`;
+
+            // 1. Render Top 3 Podium
+            let podiumHtml = '';
+            
+            // #1 Gold
+            const first = scores[0];
+            if (first) {
+                const isYou1 = gameState.playerName && (first.name.toLowerCase().trim() === gameState.playerName.toLowerCase().trim());
+                podiumHtml += `
+                    <div class="order-1 md:order-2 bg-gradient-to-b from-amber-100 to-amber-50/70 border-2 border-amber-400 rounded-[2.2rem] p-6 shadow-lg text-center relative overflow-hidden transform md:-translate-y-2">
+                        <div class="absolute top-3 right-3 text-2xl animate-bounce">👑</div>
+                        <div class="w-14 h-14 bg-amber-400 text-white rounded-full flex items-center justify-center mx-auto mb-3 text-2xl font-black shadow-md">
+                            🥇
+                        </div>
+                        <span class="text-[10px] uppercase font-black text-amber-900 tracking-wider bg-amber-200/80 px-2.5 py-0.5 rounded-full inline-block mb-1">Champion</span>
+                        <h4 class="text-lg font-black text-[#0c383b] font-heading truncate px-2">${escapeHtml(first.name)} ${isYou1 ? '<span class="text-[10px] bg-[#0c383b] text-white px-2 py-0.5 rounded-full">YOU</span>' : ''}</h4>
+                        <div class="mt-3 flex items-center justify-center gap-4">
+                            <div>
+                                <span class="text-[10px] text-stone-500 uppercase font-extrabold block">Score</span>
+                                <span class="text-2xl font-black text-[#20a060] font-heading">${first.score} pts</span>
+                            </div>
+                            <div class="border-l border-amber-300 pl-4">
+                                <span class="text-[10px] text-stone-500 uppercase font-extrabold block">Time</span>
+                                <span class="text-sm font-mono font-bold text-stone-700">${first.time}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // #2 Silver
+            const second = scores[1];
+            if (second) {
+                const isYou2 = gameState.playerName && (second.name.toLowerCase().trim() === gameState.playerName.toLowerCase().trim());
+                podiumHtml += `
+                    <div class="order-2 md:order-1 bg-gradient-to-b from-slate-100 to-white border border-slate-300 rounded-[2.2rem] p-6 shadow-md text-center relative">
+                        <div class="w-12 h-12 bg-slate-300 text-white rounded-full flex items-center justify-center mx-auto mb-3 text-xl font-black shadow-inner">
+                            🥈
+                        </div>
+                        <span class="text-[10px] uppercase font-bold text-slate-700 tracking-wider bg-slate-200/80 px-2.5 py-0.5 rounded-full inline-block mb-1">2nd Place</span>
+                        <h4 class="text-base font-black text-[#0c383b] font-heading truncate px-2">${escapeHtml(second.name)} ${isYou2 ? '<span class="text-[10px] bg-[#0c383b] text-white px-2 py-0.5 rounded-full">YOU</span>' : ''}</h4>
+                        <div class="mt-3 flex items-center justify-center gap-4">
+                            <div>
+                                <span class="text-[10px] text-stone-500 uppercase font-extrabold block">Score</span>
+                                <span class="text-xl font-black text-[#20a060] font-heading">${second.score} pts</span>
+                            </div>
+                            <div class="border-l border-slate-200 pl-4">
+                                <span class="text-[10px] text-stone-500 uppercase font-extrabold block">Time</span>
+                                <span class="text-sm font-mono font-bold text-stone-700">${second.time}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                podiumHtml += `
+                    <div class="order-2 md:order-1 bg-stone-50 border border-dashed border-stone-300 rounded-[2.2rem] p-6 text-center text-stone-400 text-xs font-medium flex items-center justify-center min-h-[180px]">
+                        🥈 2nd Place Spot Open
+                    </div>
+                `;
+            }
+
+            // #3 Bronze
+            const third = scores[2];
+            if (third) {
+                const isYou3 = gameState.playerName && (third.name.toLowerCase().trim() === gameState.playerName.toLowerCase().trim());
+                podiumHtml += `
+                    <div class="order-3 bg-gradient-to-b from-orange-100/70 to-white border border-orange-300/80 rounded-[2.2rem] p-6 shadow-md text-center relative">
+                        <div class="w-12 h-12 bg-orange-300 text-white rounded-full flex items-center justify-center mx-auto mb-3 text-xl font-black shadow-inner">
+                            🥉
+                        </div>
+                        <span class="text-[10px] uppercase font-bold text-orange-900 tracking-wider bg-orange-200/80 px-2.5 py-0.5 rounded-full inline-block mb-1">3rd Place</span>
+                        <h4 class="text-base font-black text-[#0c383b] font-heading truncate px-2">${escapeHtml(third.name)} ${isYou3 ? '<span class="text-[10px] bg-[#0c383b] text-white px-2 py-0.5 rounded-full">YOU</span>' : ''}</h4>
+                        <div class="mt-3 flex items-center justify-center gap-4">
+                            <div>
+                                <span class="text-[10px] text-stone-500 uppercase font-extrabold block">Score</span>
+                                <span class="text-xl font-black text-[#20a060] font-heading">${third.score} pts</span>
+                            </div>
+                            <div class="border-l border-orange-200 pl-4">
+                                <span class="text-[10px] text-stone-500 uppercase font-extrabold block">Time</span>
+                                <span class="text-sm font-mono font-bold text-stone-700">${third.time}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                podiumHtml += `
+                    <div class="order-3 bg-stone-50 border border-dashed border-stone-300 rounded-[2.2rem] p-6 text-center text-stone-400 text-xs font-medium flex items-center justify-center min-h-[180px]">
+                        🥉 3rd Place Spot Open
+                    </div>
+                `;
+            }
+
+            podiumEl.innerHTML = podiumHtml;
+
+            // 2. Render Ranks 4 to 30+ (or all scores)
+            let listHtml = '';
+            const remaining = scores.slice(3);
+
+            if (remaining.length === 0) {
+                listHtml = '<div class="text-center py-6 text-stone-400 text-xs font-medium">All top players are displayed on the podium above. More student ranks will appear here as they complete challenges!</div>';
+            } else {
+                remaining.forEach((item, idx) => {
+                    const rankNum = idx + 4;
+                    const isYou = gameState.playerName && (item.name.toLowerCase().trim() === gameState.playerName.toLowerCase().trim());
+                    listHtml += `
+                        <div class="flex items-center justify-between p-3.5 rounded-2xl border transition ${isYou ? 'bg-amber-50/60 border-amber-300 ring-2 ring-[#0c383b]' : 'bg-stone-50/60 border-stone-200/80 hover:bg-white'}">
+                            <div class="flex items-center gap-3 min-w-0 pr-2">
+                                <span class="font-black text-stone-400 w-8 text-center text-xs sm:text-sm font-heading">#${rankNum}</span>
+                                <div class="min-w-0 truncate">
+                                    <div class="flex items-center gap-1.5 flex-wrap">
+                                        <h4 class="font-extrabold text-stone-800 text-xs sm:text-sm font-heading truncate">${escapeHtml(item.name)}</h4>
+                                        ${isYou ? '<span class="text-[9px] bg-[#0c383b] text-white font-black px-1.5 py-0.2 rounded-full">YOU</span>' : ''}
+                                    </div>
+                                    <span class="text-[10px] text-stone-400 font-semibold">• ${escapeHtml(item.date || 'Today')}</span>
+                                </div>
+                            </div>
+                            <div class="text-right flex-shrink-0">
+                                <span class="text-xs sm:text-sm font-black text-[#20a060] block font-heading">${item.score} pts</span>
+                                <span class="text-[10px] text-stone-500 font-mono font-bold bg-white px-2 py-0.5 rounded border border-stone-200">${item.time}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            listEl.innerHTML = listHtml;
+        }
+
+        async function refreshEmbeddedLeaderboard() {
+            const icon = document.getElementById('embedded-refresh-icon');
+            if (icon) icon.classList.add('animate-spin');
+            await loadEmbeddedLeaderboard();
+            setTimeout(() => {
+                if (icon) icon.classList.remove('animate-spin');
+            }, 600);
         }
 
         function escapeHtml(text) {
@@ -1660,5 +1928,11 @@
             return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
         }
     </script>
+    <!-- FLOATING QUICK LEADERBOARD BUTTON (Always visible on mobile & desktop) -->
+    <button onclick="scrollToLeaderboard()" id="floating-leaderboard-btn" class="fixed bottom-6 right-6 z-40 bg-[#0c383b] hover:bg-[#144d51] text-white font-extrabold text-xs sm:text-sm px-4 py-3 rounded-full shadow-2xl flex items-center gap-2 border-2 border-amber-300 hover:scale-105 transition transform active:scale-95 cursor-pointer" title="View Live Classroom Leaderboard">
+        <span class="text-base">🏆</span>
+        <span>Leaderboard</span>
+        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+    </button>
 </body>
 </html>
