@@ -47,8 +47,10 @@ All **30+ students** playing on their mobile or laptop can see each other on the
 
 ---
 
-### Step 5: Connect It to the Game
-1. Open the game in your browser.
-2. Click **Leaderboard** -> Click **⚙️ Database Settings**.
-3. Paste the URL and click **Save & Connect**.
-4. That's it! Live scores will sync across all 30 students instantly!
+### Step 5: Connected Live Google Sheet URL
+The game is already connected directly to your active deployment:
+```
+https://script.google.com/macros/s/AKfycbxGBXTsjhXJ7u9M2GsEHWJd46VOLlJ32UsC0X7Zs9yQhyC_JPDrVSE7fG-ou1lljniG/exec
+```
+All 30+ students playing will automatically sync their scores here in real time!
+

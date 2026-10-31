@@ -79,11 +79,23 @@ function doGet(e) {
     for (var i = 1; i < data.length; i++) {
       var row = data[i];
       if (row[1] && row[1].toString().trim() !== "") {
+        var rawSecs = Number(row[4]) || 0;
+        var timeStr = "00:00";
+        if (typeof row[3] === 'string' && row[3].indexOf(':') !== -1 && row[3].length <= 8) {
+          timeStr = row[3].trim();
+        } else if (rawSecs > 0) {
+          var m = Math.floor(rawSecs / 60);
+          var remS = rawSecs % 60;
+          timeStr = (m < 10 ? "0" + m : m) + ":" + (remS < 10 ? "0" + remS : remS);
+        } else if (row[3]) {
+          timeStr = row[3].toString().trim().substring(0, 8);
+        }
+
         rawEntries.push({
           name: row[1].toString().trim(),
           score: Number(row[2]) || 0,
-          time: row[3] ? row[3].toString().trim() : "00:00",
-          seconds: Number(row[4]) || 0,
+          time: timeStr,
+          seconds: rawSecs,
           date: row[5] ? row[5].toString().trim() : ""
         });
       }
@@ -174,3 +186,4 @@ function createJsonResponse(obj) {
   return ContentService.createTextOutput(JSON.stringify(obj))
     .setMimeType(ContentService.MimeType.JSON);
 }
+

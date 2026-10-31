@@ -1279,11 +1279,17 @@
             { name: "Gayathri S", score: 120, time: "04:20", seconds: 260, date: "Today" }
         ];
 
-        // Optional default URL if you want it hardcoded across all deployments:
-        const DEFAULT_CLOUD_SHEET_URL = "";
+        // Default Google Apps Script Web App URL for live 30+ students classroom syncing:
+        const DEFAULT_CLOUD_SHEET_URL = "https://script.google.com/macros/s/AKfycbxGBXTsjhXJ7u9M2GsEHWJd46VOLlJ32UsC0X7Zs9yQhyC_JPDrVSE7fG-ou1lljniG/exec";
 
         function getCloudSheetUrl() {
-            return (localStorage.getItem('syllablex_sheet_url') || DEFAULT_CLOUD_SHEET_URL || "").trim();
+            let saved = (localStorage.getItem('syllablex_sheet_url') || "").trim();
+            // Automatically upgrade empty or legacy sheetdb URLs to the live Google Apps Script deployment
+            if (!saved || saved.includes('sheetdb.io')) {
+                saved = DEFAULT_CLOUD_SHEET_URL;
+                localStorage.setItem('syllablex_sheet_url', DEFAULT_CLOUD_SHEET_URL);
+            }
+            return saved;
         }
 
         function setCloudSheetUrl(url) {
@@ -1563,6 +1569,14 @@
                     if (!response.ok) throw new Error("HTTP " + response.status);
                     const data = await response.json();
                     if (data && data.status === 'success' && Array.isArray(data.leaderboard) && data.leaderboard.length > 0) {
+                        data.leaderboard.forEach(item => {
+                            if (item.seconds && (!item.time || item.time.length > 8 || !item.time.includes(':'))) {
+                                const s = Number(item.seconds) || 0;
+                                const m = Math.floor(s / 60);
+                                const rem = s % 60;
+                                item.time = `${String(m).padStart(2, '0')}:${String(rem).padStart(2, '0')}`;
+                            }
+                        });
                         results = data.leaderboard;
                     }
                 }
