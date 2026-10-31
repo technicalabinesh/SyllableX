@@ -3,24 +3,25 @@
  * SYLLABLEX CLASSROOM LEADERBOARD - GOOGLE APPS SCRIPT BACKEND
  * =======================================================================
  * 
- * This script turns your Google Sheet into a free, live, real-time
- * cloud database for all 30+ students playing your Netlify web app!
+ * 100% FREE & UNLIMITED: Supports 30+ to 1,000+ students playing simultaneously!
+ * Scores are saved in real-time directly to your Google Sheet.
  * 
  * QUICK SETUP (2 MINUTES):
- * 1. Go to Google Sheets (https://sheets.google.com) and create a NEW spreadsheet.
+ * 1. Open Google Sheets (https://sheets.google.com) and create a NEW spreadsheet.
  * 2. Title it: "SyllableX Quiz Leaderboard".
  * 3. In the top menu, click: Extensions -> Apps Script.
- * 4. Erase all existing code in the editor, and PASTE this entire file.
- * 5. Click the "Save" icon (or Ctrl+S / Cmd+S).
+ * 4. Delete everything in the editor, and PASTE this entire script.
+ * 5. Click Save (Ctrl+S).
  * 6. Click the blue "Deploy" button (top-right) -> "New deployment".
- * 7. Click the Gear icon next to "Select type" -> select "Web app".
- * 8. Set the following EXACT settings:
- *    - Description: "SyllableX Leaderboard"
- *    - Execute as: "Me" (your email)
- *    - Who has access: "Anyone"  <-- CRITICAL: Must be "Anyone" so students can submit without logging in!
- * 9. Click "Deploy". (Google may ask you to Authorize / Review Permissions - click Advanced -> Go to SyllableX (unsafe) -> Allow).
- * 10. COPY the "Web app URL" (it starts with https://script.google.com/macros/s/...)
- * 11. Paste that URL into the game (either via the "⚙️ Connect Database" button on the leaderboard, or inside the HTML file)!
+ * 7. Click the Gear icon ⚙️ next to "Select type" -> choose "Web app".
+ * 8. Set the EXACT settings:
+ *    - Description: SyllableX Leaderboard
+ *    - Execute as: Me (your email)
+ *    - Who has access: Anyone  <-- (VERY IMPORTANT: Must be "Anyone" so all students can submit without logging in!)
+ * 9. Click "Deploy".
+ *    - If Google asks for permissions: Click "Authorize access" -> choose your email -> click "Advanced" -> click "Go to SyllableX (unsafe)" -> click "Allow".
+ * 10. Copy the "Web app URL" (starts with https://script.google.com/macros/s/...)
+ * 11. Paste that URL into the game (Click "Leaderboard" -> "⚙️ Database Settings" -> Paste -> "Save & Connect").
  */
 
 // Initialize or get the active sheet with headers
