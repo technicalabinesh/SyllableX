@@ -734,9 +734,9 @@
                 <div class="flex justify-between items-center text-[10px] text-stone-500">
                     <span>See <code class="bg-amber-100 px-1 py-0.5 rounded text-amber-800 font-mono">GOOGLE_SHEET_SETUP_GUIDE.md</code></span>
                     <div class="flex gap-2">
-                        <button onclick="resetToClassroom30()" class="text-amber-800 hover:underline font-bold">Reset 30 Students</button>
+                        <button onclick="clearLeaderboard()" class="text-rose-600 hover:underline font-bold">Clear Local</button>
                         <span>•</span>
-                        <button onclick="clearDbSettings()" class="text-rose-500 hover:underline">Clear URL</button>
+                        <button onclick="clearDbSettings()" class="text-stone-500 hover:underline">Reset URL</button>
                     </div>
                 </div>
             </div>
@@ -1244,40 +1244,20 @@
         // ==============================================================
         // CLOUD & LOCAL LEADERBOARD ENGINE (Google Sheets + LocalStorage)
         // ==============================================================
-        
-        // 30 Active Classroom Students (Temporary Leaderboard fallback)
-        const DEFAULT_CLASSROOM_30_STUDENTS = [
-            { name: "Priya Sharma", score: 200, time: "01:22", seconds: 82, date: "Today" },
-            { name: "Karthik Raja", score: 200, time: "01:35", seconds: 95, date: "Today" },
-            { name: "Divya Meenakshi", score: 195, time: "01:40", seconds: 100, date: "Today" },
-            { name: "Rahul Krishna", score: 190, time: "01:48", seconds: 108, date: "Today" },
-            { name: "Sanjay Ram", score: 190, time: "01:55", seconds: 115, date: "Today" },
-            { name: "Sneha Parthiban", score: 185, time: "02:02", seconds: 122, date: "Today" },
-            { name: "Manoj Kumar", score: 180, time: "02:10", seconds: 130, date: "Today" },
-            { name: "Harish Vijay", score: 180, time: "02:14", seconds: 134, date: "Today" },
-            { name: "Swetha Balan", score: 175, time: "02:20", seconds: 140, date: "Today" },
-            { name: "Vignesh Sundar", score: 175, time: "02:25", seconds: 145, date: "Today" },
-            { name: "Ananya Govind", score: 170, time: "02:30", seconds: 150, date: "Today" },
-            { name: "Kaviya Thendral", score: 170, time: "02:35", seconds: 155, date: "Today" },
-            { name: "Arun Deepan", score: 165, time: "02:40", seconds: 160, date: "Today" },
-            { name: "Deepa Mohan", score: 165, time: "02:46", seconds: 166, date: "Today" },
-            { name: "Ashwin Sridhar", score: 160, time: "02:50", seconds: 170, date: "Today" },
-            { name: "Pooja Nandhini", score: 160, time: "02:55", seconds: 175, date: "Today" },
-            { name: "Suresh Babu", score: 155, time: "03:00", seconds: 180, date: "Today" },
-            { name: "Pavithra K", score: 155, time: "03:05", seconds: 185, date: "Today" },
-            { name: "Naveen Raj", score: 150, time: "03:10", seconds: 190, date: "Today" },
-            { name: "Keerthi Suresh", score: 150, time: "03:15", seconds: 195, date: "Today" },
-            { name: "Gokul Prasad", score: 145, time: "03:22", seconds: 202, date: "Today" },
-            { name: "Janani V", score: 145, time: "03:28", seconds: 208, date: "Today" },
-            { name: "Bala Murugan", score: 140, time: "03:35", seconds: 215, date: "Today" },
-            { name: "Aishwarya R", score: 140, time: "03:40", seconds: 220, date: "Today" },
-            { name: "Dinesh K", score: 135, time: "03:45", seconds: 225, date: "Today" },
-            { name: "Nithya Sri", score: 135, time: "03:52", seconds: 232, date: "Today" },
-            { name: "Saravanan T", score: 130, time: "03:58", seconds: 238, date: "Today" },
-            { name: "Madhumitha P", score: 130, time: "04:05", seconds: 245, date: "Today" },
-            { name: "Vijay Anand", score: 125, time: "04:12", seconds: 252, date: "Today" },
-            { name: "Gayathri S", score: 120, time: "04:20", seconds: 260, date: "Today" }
+
+        // List of legacy dummy sample names to filter out so students are never confused:
+        const DUMMY_NAMES = [
+            "priya sharma", "karthik raja", "divya meenakshi", "rahul krishna", "sanjay ram",
+            "sneha parthiban", "manoj kumar", "harish vijay", "swetha balan", "vignesh sundar",
+            "ananya govind", "kaviya thendral", "arun deepan", "deepa mohan", "ashwin sridhar",
+            "pooja nandhini", "suresh babu", "pavithra k", "naveen raj", "keerthi suresh",
+            "gokul prasad", "janani v", "bala murugan", "aishwarya r", "dinesh k",
+            "nithya sri", "saravanan t", "madhumitha p", "vijay anand", "gayathri s", "teststudent"
         ];
+        function isDummyStudent(name) {
+            if (!name) return true;
+            return DUMMY_NAMES.includes(name.toString().toLowerCase().trim());
+        }
 
         // Default Google Apps Script Web App URL for live 30+ students classroom syncing:
         const DEFAULT_CLOUD_SHEET_URL = "https://script.google.com/macros/s/AKfycbxGBXTsjhXJ7u9M2GsEHWJd46VOLlJ32UsC0X7Zs9yQhyC_JPDrVSE7fG-ou1lljniG/exec";
@@ -1390,20 +1370,24 @@
 
         function getLocalScores() {
             let raw = localStorage.getItem('syllablex_leaderboard');
-            if (!raw) {
-                localStorage.setItem('syllablex_leaderboard', JSON.stringify(DEFAULT_CLASSROOM_30_STUDENTS));
-                return JSON.parse(JSON.stringify(DEFAULT_CLASSROOM_30_STUDENTS));
-            }
+            if (!raw) return [];
             try {
                 let parsed = JSON.parse(raw);
-                if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+                if (Array.isArray(parsed)) {
+                    // Filter out any legacy dummy sample names
+                    const filtered = parsed.filter(item => item && item.name && !isDummyStudent(item.name));
+                    if (filtered.length !== parsed.length) {
+                        localStorage.setItem('syllablex_leaderboard', JSON.stringify(filtered));
+                    }
+                    return filtered;
+                }
             } catch(e) {}
-            return JSON.parse(JSON.stringify(DEFAULT_CLASSROOM_30_STUDENTS));
+            return [];
         }
 
-        function resetToClassroom30() {
-            if (confirm("Reset leaderboard to 30 active classroom students?")) {
-                localStorage.setItem('syllablex_leaderboard', JSON.stringify(DEFAULT_CLASSROOM_30_STUDENTS));
+        function clearLeaderboard() {
+            if (confirm("Clear local device scores?")) {
+                localStorage.removeItem('syllablex_leaderboard');
                 loadEmbeddedLeaderboard();
                 if (activeLeaderboardTab === 'cloud') {
                     loadCloudLeaderboard(true);
@@ -1568,8 +1552,9 @@
 
                     if (!response.ok) throw new Error("HTTP " + response.status);
                     const data = await response.json();
-                    if (data && data.status === 'success' && Array.isArray(data.leaderboard) && data.leaderboard.length > 0) {
-                        data.leaderboard.forEach(item => {
+                    if (data && data.status === 'success' && Array.isArray(data.leaderboard)) {
+                        const cleanList = data.leaderboard.filter(item => item && item.name && !isDummyStudent(item.name));
+                        cleanList.forEach(item => {
                             if (item.seconds && (!item.time || item.time.length > 8 || !item.time.includes(':'))) {
                                 const s = Number(item.seconds) || 0;
                                 const m = Math.floor(s / 60);
@@ -1577,11 +1562,11 @@
                                 item.time = `${String(m).padStart(2, '0')}:${String(rem).padStart(2, '0')}`;
                             }
                         });
-                        results = data.leaderboard;
+                        results = cleanList;
                     }
                 }
 
-                if (results && results.length > 0) {
+                if (Array.isArray(results)) {
                     return {
                         status: 'success',
                         isFallback: false,
@@ -1590,10 +1575,9 @@
                     };
                 }
             } catch (err) {
-                console.warn("Cloud leaderboard fetch failed, falling back to 30 Classroom Students:", err);
+                console.warn("Cloud leaderboard fetch error:", err);
             }
 
-            // Always fallback to 30 classroom scores so screen is NEVER empty!
             const fallback = getLocalScores();
             return {
                 status: 'success',
@@ -1657,20 +1641,20 @@
             const data = await fetchCloudScores();
             isFetchingCloud = false;
 
-            const scores = (data && Array.isArray(data.leaderboard) && data.leaderboard.length > 0)
+            const scores = (data && Array.isArray(data.leaderboard))
                 ? data.leaderboard
                 : getLocalScores();
 
             const isLive = data && !data.isFallback && !!url;
             bannerEl.innerHTML = `
-                <div class="flex items-center justify-between p-2.5 ${isLive ? 'bg-emerald-50 border-emerald-200 text-emerald-900' : 'bg-amber-50 border-amber-200 text-amber-900'} border rounded-xl text-xs font-medium">
+                <div class="flex items-center justify-between p-2.5 bg-emerald-50 border border-emerald-200 text-emerald-900 border rounded-xl text-xs font-medium">
                     <div class="flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full ${isLive ? 'bg-emerald-500' : 'bg-amber-500'} animate-pulse"></span>
-                        <span>${isLive ? 'Live Cloud Leaderboard' : 'Classroom Leaderboard'}: <strong class="font-extrabold">${scores.length} students ranked</strong></span>
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <span>Live Google Sheet: <strong class="font-extrabold">${scores.length} ${scores.length === 1 ? 'student' : 'students'} ranked</strong></span>
                     </div>
                     <div class="flex items-center gap-1.5">
-                        <span class="text-[10px] ${isLive ? 'text-emerald-700 border-emerald-200' : 'text-amber-800 border-amber-200'} font-mono font-bold bg-white/80 px-2 py-0.5 rounded-full border">${isLive ? 'Synced' : '30 Members Active'}</span>
-                        <button onclick="toggleDbSettings(true)" class="text-[10px] bg-[#0c383b] text-white px-2 py-0.5 rounded-full font-bold hover:bg-[#144d51] transition">⚙️ Connect Sheet</button>
+                        <span class="text-[10px] text-emerald-700 border-emerald-200 font-mono font-bold bg-white/80 px-2 py-0.5 rounded-full border">Connected</span>
+                        <button onclick="toggleDbSettings(true)" class="text-[10px] bg-[#0c383b] text-white px-2 py-0.5 rounded-full font-bold hover:bg-[#144d51] transition">⚙️ Settings</button>
                     </div>
                 </div>
             `;
@@ -1685,10 +1669,12 @@
             const localScores = getLocalScores();
             bannerEl.innerHTML = `
                 <div class="p-2.5 bg-stone-100 border border-stone-200 rounded-xl text-xs text-stone-600 font-medium flex items-center justify-between">
-                    <span>📱 30 Classroom Students & local browser rankings.</span>
-                    <button onclick="resetToClassroom30()" class="text-[10px] font-bold text-stone-700 bg-white hover:bg-stone-50 px-2.5 py-1 rounded-lg border border-stone-300 transition">
-                        Reset 30 Students
+                    <span>📱 Scores completed on this device browser (${localScores.length}).</span>
+                    ${localScores.length > 0 ? `
+                    <button onclick="clearLeaderboard()" class="text-[10px] font-bold text-rose-600 bg-white hover:bg-rose-50 px-2.5 py-1 rounded-lg border border-stone-300 transition">
+                        Clear Local
                     </button>
+                    ` : ''}
                 </div>
             `;
             renderLeaderboardEntries(localScores, false);
@@ -1824,16 +1810,12 @@
             if (!podiumEl || !listEl) return;
 
             const data = await fetchCloudScores();
-            const scores = (data && Array.isArray(data.leaderboard) && data.leaderboard.length > 0)
+            const scores = (data && Array.isArray(data.leaderboard))
                 ? data.leaderboard
                 : getLocalScores();
 
-            if (countEl) {
-                const isLive = data && !data.isFallback && !!getCloudSheetUrl();
-                countEl.innerText = `${scores.length} Students Ranked (${isLive ? 'Live Cloud' : 'Classroom Active'})`;
-            }
-
             if (!scores || scores.length === 0) {
+                if (countEl) countEl.innerText = "0 Students Ranked (Ready)";
                 podiumEl.innerHTML = `
                     <div class="col-span-1 md:col-span-3 text-center py-8 bg-amber-50/70 border border-amber-200 rounded-3xl p-6">
                         <div class="text-3xl mb-2">⚡</div>
@@ -1845,6 +1827,11 @@
                 `;
                 listEl.innerHTML = '<div class="text-center py-6 text-stone-400 text-xs italic">Waiting for students to submit scores...</div>';
                 return;
+            }
+
+            if (countEl) {
+                const isLive = data && !data.isFallback && !!getCloudSheetUrl();
+                countEl.innerText = `${scores.length} ${scores.length === 1 ? 'Student' : 'Students'} Ranked (${isLive ? 'Live Cloud' : 'Device'})`;
             }
 
             // 1. Render Top 3 Podium
